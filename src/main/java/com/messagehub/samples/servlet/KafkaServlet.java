@@ -264,7 +264,7 @@ public class KafkaServlet extends HttpServlet {
 
     /**
      * Retrieve client configuration information, using a properties file, for connecting to secure Kafka.
-     * 
+     *
      * @param broker
      *            {String} A string representing a list of brokers the producer can contact.
      * @param apiKey
@@ -308,7 +308,7 @@ public class KafkaServlet extends HttpServlet {
 
     /**
      * Produce a message to a <code>topic</code>
-     * 
+     *
      * @param topic
      */
     public void produce(String topic) {
@@ -379,9 +379,9 @@ public class KafkaServlet extends HttpServlet {
 
     /**
      * Kafka consumer runnable which can be used to create and run consumer as a separate thread.
-     * 
+     *
      * @author Admin
-     * 
+     *
      */
     class ConsumerRunnable implements Runnable {
         private KafkaConsumer<byte[], byte[]> kafkaConsumer;
