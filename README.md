@@ -46,3 +46,9 @@ cf push
 [Liberty-License]: http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/8.5.5.7/lafiles/runtime/en.html
 [JVM-License]: http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?la_formnum=&li_formnum=L-JWOD-9SYNCP&title=IBM%C2%AE+SDK%2C+Java+Technology+Edition%2C+Version+8.0&l=en
 [manifest documentation]: http://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html
+
+
+# TODO
+* install liberty and push after build for test
+* use search topic for producer and consumer
+* move existing kappa code across
