@@ -1,0 +1,9 @@
+/target/
+/bin/
+/build/
+/.gradle/
+/.settings/
+/.project
+/.vagrant/
+
+manifest.yml

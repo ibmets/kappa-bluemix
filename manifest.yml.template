@@ -1,0 +1,13 @@
+applications:
+- path: target/defaultServer
+  memory: 256M
+  instances: 1
+  domain: eu-gb.mybluemix.net
+  name: kappa-yourname
+  disk_quota: 1024M
+  random-route: true
+  services:
+    - "yourname-messagehub"
+  env:
+    IBM_JVM_LICENSE: L-JWOD-9SYNCP
+    IBM_LIBERTY_LICENSE: L-MCAO-9SYMVC
