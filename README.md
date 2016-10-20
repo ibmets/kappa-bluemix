@@ -22,9 +22,10 @@ You should see a directory called `target` created in your project home director
 ## Deployment Prerequisites
 To deploy applications using the IBM WebSphere Application Server Liberty Buildpack, you are required to accept the IBM Liberty license and IBM JRE license by following the instructions below:
 
-1. Read the current IBM [Liberty-License][] and the current IBM [JVM-License][].
-2. Extract the `D/N: <License code>` from the Liberty-License and JVM-License.
-3. Add the following environment variables and extracted license codes to the `manifest.yml` file in the directory from which you push your application. For further information on the format of
+1. Move `manifest.yml.template` to `manifest.yml`
+2. Read the current IBM [Liberty-License][] and the current IBM [JVM-License][].
+3. Extract the `D/N: <License code>` from the Liberty-License and JVM-License.
+4. Add the following environment variables and extracted license codes to the `manifest.yml` file in the directory from which you push your application. For further information on the format of
 the `manifest.yml` file refer to the [manifest documentation][].
 
 ```yaml
