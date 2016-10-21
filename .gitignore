@@ -13,8 +13,9 @@ manifest.yml
 # vagrant files
 /.vagrant/
 
-# develop in eclipse without exporting meta files
+# develop in eclipse and liberty without exporting meta files
 .classpath
 /.settings/
 /.project
 eclipse-libs/
+wlp/
