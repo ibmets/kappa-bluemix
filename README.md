@@ -49,5 +49,6 @@ cf push
 
 
 # TODO
+* basic rest servlet
 * use search topic for producer and consumer
 * move existing kappa code across

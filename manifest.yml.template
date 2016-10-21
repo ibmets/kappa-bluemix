@@ -4,8 +4,8 @@ applications:
   instances: 1
   domain: eu-gb.mybluemix.net
   name: kappa-yourname
+  host: kappa-yourname
   disk_quota: 1024M
-  random-route: true
   services:
     - "yourname-messagehub"
   env:

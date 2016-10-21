@@ -21,7 +21,7 @@
 <server>
     <applicationMonitor updateTrigger="polled" pollingRate="500ms"
                         dropins="dropins" dropinsEnabled="true"/>
-                        
+
     <config updateTrigger="polled" monitorInterval="500ms"/>
 
     <featureManager>
@@ -31,16 +31,16 @@
     </featureManager>
 
     <library id="kafkaLoginLib">
-        <fileset dir="${server.config.dir}/apps/MessageHubLibertyApp.war/WEB-INF/lib" includes="kafka-clients-*.jar"/>
+        <fileset dir="${server.config.dir}/apps/kappa-bluemix.war/WEB-INF/lib" includes="kafka-clients-*.jar"/>
     </library>
 
     <jaasLoginModule id="KafkaClient"
                 className="org.apache.kafka.common.security.plain.PlainLoginModule"
                 controlFlag="REQUIRED" libraryRef="kafkaLoginLib">
-                
+
         <options serviceName="kafka" username="#USERNAME" password="#PASSWORD" />
     </jaasLoginModule>
-    
+
     <jaasLoginContextEntry id="KafkaClient" name="KafkaClient" loginModuleRef="KafkaClient" />
 
     <httpEndpoint id="defaultHttpEndpoint"
@@ -49,6 +49,6 @@
         <tcpOptions soReuseAddr="true"/>
     </httpEndpoint>
 
-    <application name="MessageHubLibertyApp" context-root="/" location="MessageHubLibertyApp.war" type="war"/>
+    <application name="kappa-bluemix" context-root="/" location="kappa-bluemix.war" type="war"/>
 
 </server>
