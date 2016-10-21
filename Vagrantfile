@@ -14,7 +14,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.box = "ubuntu/trusty64"
   config.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64"
-  config.vm.network "private_network", type: "dhcp"
+  config.vm.network "forwarded_port", guest: 22, host: 2221, id: "ssh"
+  config.vm.network "forwarded_port", guest: 9080, host: 9080
   config.vm.provision :shell, path: "bootstrap.sh"
   config.vm.box_check_update = false
   config.vm.hostname   = "message-hub-liberty-sample"

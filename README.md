@@ -49,6 +49,5 @@ cf push
 
 
 # TODO
-* install liberty and push after build for test
 * use search topic for producer and consumer
 * move existing kappa code across
