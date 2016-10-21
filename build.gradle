@@ -51,6 +51,9 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.2'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.2'
     compile 'com.fasterxml.jackson.core:jackson-core:2.7.2'
+    compile 'org.glassfish.jersey.core:jersey-server:2.23.2'
+    compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.23.2'
+    compile 'org.json:json:20151123'
 }
 
 // move generated war file into the DefaultServer/apps diretory
@@ -71,6 +74,7 @@ war {
             include '*'
             into "WEB-INF/classes"
         }
+        webXml = file("$projectDir/src/main/wlp/web.xml") // copies a file to WEB-INF/web.xml
 
 }
 
