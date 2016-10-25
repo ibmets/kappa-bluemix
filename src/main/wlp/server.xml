@@ -31,7 +31,7 @@
     </featureManager>
 
     <library id="kafkaLoginLib">
-        <fileset dir="${server.config.dir}/apps/kappa-bluemix.war/WEB-INF/lib" includes="kafka-clients-*.jar"/>
+        <fileset dir="${server.config.dir}/resources" includes="kafka-clients-*.jar"/>
     </library>
 
     <jaasLoginModule id="KafkaClient"
@@ -49,6 +49,6 @@
         <tcpOptions soReuseAddr="true"/>
     </httpEndpoint>
 
-    <application name="kappa-bluemix" context-root="/" location="kappa-bluemix.war" type="war"/>
+    <!--<application name="kappa-bluemix" context-root="/" location="kappa-bluemix.war" type="war"/> -->
 
 </server>

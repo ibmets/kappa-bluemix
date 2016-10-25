@@ -83,4 +83,16 @@ task copyServerXml {
         from "$projectDir/src/main/wlp/server.xml"
         into "$projectDir/target/defaultServer"
     }
+
+    copy {
+        from "$projectDir/src/main/wlp/server.xml"
+        into "$projectDir/wlp/servers/defaultServer"
+    }
+}
+
+task copySocalServerXml {
+    copy {
+        from "$projectDir/src/main/wlp/server.xml"
+        into "$projectDir/wlp/usr/servers/defaultServer"
+    }
 }

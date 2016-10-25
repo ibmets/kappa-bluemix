@@ -48,6 +48,10 @@ cf push
 [manifest documentation]: http://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html
 
 
+## Deploy the Sample to Local Liberty
+* add VCAP_SERVICEs in to server.env
+* install bin/installUtility install wssecurity-1.1
+
 # TODO
 * basic rest servlet
 * use search topic for producer and consumer
