@@ -28,6 +28,7 @@ public class Producer {
 		try{
 			RecordMetadata meta = kafkaProducer.send(new ProducerRecord<String, byte[]>("search", "hello".getBytes())).get();
 			System.out.println(meta.topic() + " " + meta.offset() + " " + meta.partition());
+			
 		}
 		catch(Exception e){
 			e.printStackTrace();

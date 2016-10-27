@@ -58,12 +58,11 @@ dependencies {
 
 // move generated war file into the DefaultServer/apps diretory
 tasks.withType(Jar) {
-    destinationDir = file("$projectDir/target/defaultServer/apps")
+    destinationDir = file("$projectDir/target/local/defaultServer/apps")
 }
 
 war {
-        from('resources'){
-            include '*'
+        from('resources/local'){
             into "resources"
         }
         from('src/main/resources'){
@@ -74,25 +73,26 @@ war {
             include '*'
             into "WEB-INF/classes"
         }
+
         webXml = file("$projectDir/src/main/wlp/web.xml") // copies a file to WEB-INF/web.xml
 
 }
 
 task copyServerXml {
     copy {
-        from "$projectDir/src/main/wlp/server.xml"
-        into "$projectDir/target/defaultServer"
+        from "$projectDir/src/main/wlp/local/server.xml"
+        into "$projectDir/target/local/defaultServer"
     }
 
     copy {
-        from "$projectDir/src/main/wlp/server.xml"
+        from "$projectDir/src/main/wlp/local/server.xml"
         into "$projectDir/wlp/servers/defaultServer"
     }
 }
 
-task copySocalServerXml {
+task copyLocalServerXml {
     copy {
-        from "$projectDir/src/main/wlp/server.xml"
+        from "$projectDir/src/main/wlp/local/server.xml"
         into "$projectDir/wlp/usr/servers/defaultServer"
     }
 }
