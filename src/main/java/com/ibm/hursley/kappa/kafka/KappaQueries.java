@@ -81,22 +81,4 @@ public class KappaQueries {
 		}
 	}
 	
-	/*
-	private void createConsumer(){
-		Date now = new Date();
-		Properties consumerProperties = Bluemix.getConsumerConfiguration();
-		consumerProperties.setProperty("client.id", consumerProperties.getProperty("client.id") + "-" + now.getTime());
-		System.out.println("consumer ID " + consumerProperties.getProperty("client.id"));
-		KappaQueries.kafkaConsumer = new KafkaConsumer<>(Bluemix.getConsumerConfiguration());
-	}
-	
-
-	public synchronized KafkaConsumer<String, byte[]> getConsumer(String id){
-		if(KappaQueries.kafkaConsumer == null){
-			createConsumer();
-		}
-		return KappaQueries.kafkaConsumer;
-	}
-	*/
-	
 }

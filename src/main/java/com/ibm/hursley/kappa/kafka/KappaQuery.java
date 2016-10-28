@@ -86,7 +86,7 @@ public class KappaQuery extends Thread{
 		while(running){
 			System.out.println("running query iteration: " + iteration);
 			iteration++;
-			Iterator<ConsumerRecord<String, byte[]>> it = this.kafkaConsumer.poll(60000).iterator();
+			Iterator<ConsumerRecord<String, byte[]>> it = this.kafkaConsumer.poll(10000).iterator();
 			while (it.hasNext()) {
 				messageCount++;
 				ConsumerRecord<String, byte[]> record = it.next();
@@ -97,7 +97,6 @@ public class KappaQuery extends Thread{
 			logger.log(Level.INFO, "running, kafka count: " + messageCount);
 		}
 		
-		System.out.println("B10");
 		kafkaConsumer.close();
 		logger.log(Level.INFO,"shutting down kafka consumer");
 		

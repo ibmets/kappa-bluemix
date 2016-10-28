@@ -53,6 +53,6 @@ cf push
 * install bin/installUtility install wssecurity-1.1
 
 # TODO
-* basic rest servlet
-* use search topic for producer and consumer
-* move existing kappa code across
+* WS implementation
+  http://bastide.org/2014/12/23/websockets_and_liberty/
+  https://github.com/WASdev/sample.planningpoker
