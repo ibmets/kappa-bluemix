@@ -2,6 +2,7 @@ package com.ibm.hursley.kappa.kafka;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -26,7 +27,6 @@ public class KappaQuery extends Thread{
 	public KappaQuery(String query){
 		this.query = query;
 		this.hash = KappaQuery.generateHash(query);
-		this.initKafka();
 	}
 	
 	
@@ -44,11 +44,13 @@ public class KappaQuery extends Thread{
 	}
 	
 	
-	private void initKafka(){
+	public void initKafka(){
+		
 		// create kafka consumer
 		Properties consumerProperties = (Properties) Bluemix.getConsumerConfiguration().clone();
-		consumerProperties.setProperty("client.id", "kappa-bluemix-"+this.hash);
-		logger.log(Level.INFO, "creating new consumer with ID: " + consumerProperties.getProperty("client.id"));
+		consumerProperties.setProperty("client.id", KappaQueries.getClientId());
+		consumerProperties.setProperty("group.id", "kappa-bluemix-"+this.hash);
+		logger.log(Level.INFO, "creating new consumer with ID: " + consumerProperties.getProperty("client.id") + " in group: " + consumerProperties.getProperty("group.id"));
 		this.kafkaConsumer = new KafkaConsumer<>(consumerProperties);
 		
 		// set topics
@@ -56,10 +58,8 @@ public class KappaQuery extends Thread{
 		topicList.add("search");
 		this.kafkaConsumer.subscribe(topicList);
 		
-		if(consumerProperties.containsKey("enable.auto.commit") && consumerProperties.getProperty("enable.auto.commit").trim().equalsIgnoreCase("true")){
-			this.resetStream();
-		}
-		
+		// rest to start of stream
+		this.resetStream();
 	}
 
 		
@@ -69,10 +69,12 @@ public class KappaQuery extends Thread{
 	
 	
 	private void resetStream(){
-		kafkaConsumer.poll(5000);
+		logger.log(Level.INFO,"Resetting Kafka stream");
+		kafkaConsumer.poll(1000);
 	    ArrayList<TopicPartition> topicPartions = new ArrayList<>();
 	    topicPartions.add(new TopicPartition("search",0));
 	    kafkaConsumer.seekToBeginning(topicPartions);
+	    kafkaConsumer.commitSync();
 	}
 	
 	
@@ -80,18 +82,22 @@ public class KappaQuery extends Thread{
 	public void run() {
 		logger.log(Level.INFO, "Running query");
 		int messageCount = 0;
+		int iteration = 0;
 		while(running){
-			Iterator<ConsumerRecord<String, byte[]>> it = this.kafkaConsumer.poll(5000).iterator();
+			System.out.println("running query iteration: " + iteration);
+			iteration++;
+			Iterator<ConsumerRecord<String, byte[]>> it = this.kafkaConsumer.poll(60000).iterator();
 			while (it.hasNext()) {
 				messageCount++;
 				ConsumerRecord<String, byte[]> record = it.next();
 				String message = new String(record.value(), Charset.forName("UTF-8"));
 				logger.log(Level.INFO, "Message: " + message.toString());
 			}
-		
+			this.kafkaConsumer.commitSync();
 			logger.log(Level.INFO, "running, kafka count: " + messageCount);
 		}
 		
+		System.out.println("B10");
 		kafkaConsumer.close();
 		logger.log(Level.INFO,"shutting down kafka consumer");
 		

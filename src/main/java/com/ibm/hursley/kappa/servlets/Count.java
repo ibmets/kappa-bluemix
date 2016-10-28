@@ -45,7 +45,7 @@ public class Count {
 
 	@Override
 	protected void finalize() throws Throwable {
-		kappaQueries.shutdown();
+		//kappaQueries.shutdown();
 		super.finalize();
 	}
 
