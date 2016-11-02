@@ -53,7 +53,21 @@ public class KappaQueries {
 		
 		if(KappaQueries.queries.containsKey(hash)){
 			logger.log(Level.INFO, "Query: " + query + " already exists in hashtable");
-			return KappaQueries.queries.get(hash);
+			final KappaQuery kappaQuery = KappaQueries.queries.get(hash);
+			
+			// might not be running yet (if polling for result before started)
+			if(!kappaQuery.isRunning()){
+				kappaQuery.setQuery(query);
+				Thread startupThread = new Thread() {
+			        public void run() {
+			        	kappaQuery.initKafka();
+			            kappaQuery.start();
+			        }
+			    };
+			    startupThread.start();
+			}
+			
+			return kappaQuery;
 		}
 		else{
 			final KappaQuery kappaQuery = new KappaQuery(query);
@@ -69,6 +83,17 @@ public class KappaQueries {
 		    return kappaQuery;
 		}
 
+	}
+	
+	public KappaQuery getQuery(String hash){
+		if(KappaQueries.queries.containsKey(hash)){
+			return KappaQueries.queries.get(hash);
+		}
+		else{
+			KappaQuery kappaQuery = new KappaQuery();
+			KappaQueries.queries.put(hash, kappaQuery);
+			return kappaQuery;
+		}
 	}
 	
 	

@@ -4,42 +4,48 @@ package com.ibm.hursley.kappa.servlets;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 
 import com.ibm.hursley.kappa.kafka.KappaQueries;
-import com.ibm.hursley.kappa.kafka.Producer;
+import com.ibm.hursley.kappa.kafka.KappaQuery;
 
 @Path("/count")
 public class Count {
 	
 	private KappaQueries kappaQueries = null;
-	private Producer producer = null;
+
 	private final Logger logger = Logger.getLogger(Count.class);
 	
 	public Count(){
 		kappaQueries = new KappaQueries();
-		producer = new Producer();
 	}
 	
 	
 	@POST
 	@Produces(MediaType.TEXT_PLAIN)
-	public String incrementCount() {
-		producer.addMessage("Count Request");
-		return "OK";
+	public String addQuery() {
+		KappaQuery kappaQuery = kappaQueries.runQuery("count all");
+		return kappaQuery.getHash();
 	}
 	
-	// This method is called if TEXT_PLAIN is request
+	
+	@Path("/{queryhash}")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
-	public String sayPlainTextHello() {
-		kappaQueries.runQuery("count all");
+	public String getQueryResults(@PathParam("queryhash") String queryHash) {
+		System.out.println("get data for hash: " + queryHash);
+		KappaQuery kappaQuery = kappaQueries.getQuery(queryHash);
 		
-		return "RUNNING";
-		
+		if(kappaQuery != null){
+			return kappaQuery.getResult();
+		}
+		else{
+			return "0";
+		}
 	}
 
 
