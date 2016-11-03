@@ -53,6 +53,7 @@ cf push
 * install bin/installUtility install wssecurity-1.1
 
 # TODO
-* WS implementation
-  http://bastide.org/2014/12/23/websockets_and_liberty/
-  https://github.com/WASdev/sample.planningpoker
+* Exampe live data feed
+http://www.marinetraffic.com/en/ais-api-services/documentation
+http://datacasting.jpl.nasa.gov/feed_directory/show_category.php?browse=term&termId=80
+tfl
