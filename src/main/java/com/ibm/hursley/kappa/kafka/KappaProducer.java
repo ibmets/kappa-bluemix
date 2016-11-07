@@ -16,30 +16,37 @@ import com.ibm.hursley.kappa.bluemix.Bluemix;
 public class KappaProducer {
 	
 	private final Logger logger = Logger.getLogger(KappaProducer.class);
-	private KafkaProducer<String, byte[]> kafkaProducer = null;
-	
-	private String clientId = null;
+	private static KafkaProducer<String, byte[]> kafkaProducer = null;
+	private static String clientId = null;
 	
 	public KappaProducer(){
-		this.clientId = KappaProducer.createClientId();
+		if(KappaProducer.kafkaProducer == null){
+			this.init();
+		}
 	}
 	
-	public static String createClientId(){
+	private synchronized void init(){
+		if(KappaProducer.kafkaProducer == null){
+			logger.log(Level.INFO, "initialising Kafka producer");
+			//KappaProducer.clientId = KappaProducer.createClientId();
+			
+			Properties producerProperties = (Properties) Bluemix.getProducerConfiguration().clone();
+			//producerProperties.setProperty("client.id", this.getClientId());
+			KappaProducer.kafkaProducer = new KafkaProducer<>(producerProperties);
+		}
+	}
+	
+	private static String createClientId(){
 		SecureRandom random = new SecureRandom();
 		return new BigInteger(130, random).toString(32);
 	}
 	
-	public String getClientId(){
-		return this.clientId;
+	private String getClientId(){
+		return KappaProducer.clientId;
 	}
 	
-	public KafkaProducer<String, byte[]> getProducer(){
-		if(this.kafkaProducer == null){
-			Properties producerProperties = (Properties) Bluemix.getProducerConfiguration().clone();
-			producerProperties.setProperty("client.id", this.getClientId());
-			this.kafkaProducer = new KafkaProducer<>(producerProperties);
-		}	
-		return this.kafkaProducer;
+	private KafkaProducer<String, byte[]> getProducer(){
+		return KappaProducer.kafkaProducer;
 	}
 	
 	

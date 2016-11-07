@@ -12,6 +12,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.ibm.hursley.kappa.bluemix.Bluemix;
+import com.ibm.hursley.kappa.queries.CountRecords;
 
 public class KappaQueries {
 	
@@ -36,20 +37,27 @@ public class KappaQueries {
 	
 	
 	private synchronized void initQueries(){
-		KappaQueries.queries = new Hashtable<>();
+		if(KappaQueries.queries == null){
+			logger.log(Level.INFO, "cretaing hashtable to store queries");
+			KappaQueries.queries = new Hashtable<>();
+		}
+		
 	}
 	
 	private synchronized void createClientId(){
-		SecureRandom random = new SecureRandom();
-		KappaQueries.clientId = new BigInteger(130, random).toString(32);
+		if(KappaQueries.clientId == null){
+			logger.log(Level.INFO, "creatig new client id for consumer");
+			SecureRandom random = new SecureRandom();
+			KappaQueries.clientId = new BigInteger(130, random).toString(32);
+		}
 	}
 	
 	public static String getClientId(){
 		return KappaQueries.clientId;
 	}
 	
-	public synchronized KappaQuery runQuery(String query){
-		String hash = KappaQuery.generateHash(query);
+	public synchronized KappaQuery runQuery(String query, String filter){
+		String hash = KappaQuery.generateHash(query, filter);
 		
 		if(KappaQueries.queries.containsKey(hash)){
 			logger.log(Level.INFO, "Query: " + query + " already exists in hashtable");
@@ -57,7 +65,8 @@ public class KappaQueries {
 			
 			// might not be running yet (if polling for result before started)
 			if(!kappaQuery.isRunning()){
-				kappaQuery.setQuery(query);
+				logger.log(Level.INFO, " but it has not yet been started");
+				kappaQuery.setQuery(query, filter);
 				Thread startupThread = new Thread() {
 			        public void run() {
 			        	kappaQuery.initKafka();
@@ -70,7 +79,7 @@ public class KappaQueries {
 			return kappaQuery;
 		}
 		else{
-			final KappaQuery kappaQuery = new KappaQuery(query);
+			final KappaQuery kappaQuery = getQueryHandler(query, filter);
 			logger.log(Level.INFO, "Query: " + query + " does not exist in hashtable");
 			KappaQueries.queries.put(hash, kappaQuery);
 			Thread startupThread = new Thread() {
@@ -90,9 +99,8 @@ public class KappaQueries {
 			return KappaQueries.queries.get(hash);
 		}
 		else{
-			KappaQuery kappaQuery = new KappaQuery();
-			KappaQueries.queries.put(hash, kappaQuery);
-			return kappaQuery;
+			logger.log(Level.ERROR, "A query for hash " + hash + " has not been created");
+			return null;
 		}
 	}
 	
@@ -104,6 +112,19 @@ public class KappaQueries {
 			KappaQuery kappaQuery = KappaQueries.queries.get(key);
 			kappaQuery.shutdown();
 		}
+	}
+	
+	private KappaQuery getQueryHandler(String query, String filter){
+		
+		if(query != null && query.equalsIgnoreCase("count")){
+			final KappaQuery kappaQuery = new CountRecords(query, filter);
+			return kappaQuery;
+		}
+		else{
+			final KappaQuery kappaQuery = new KappaQuery(query, filter);
+			return kappaQuery;
+		}
+		
 	}
 	
 }

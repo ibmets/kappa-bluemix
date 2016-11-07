@@ -5,6 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,10 +16,9 @@ import com.ibm.hursley.kappa.kafka.KappaProducer;
 public class Import {
 	
 	private final Logger logger = Logger.getLogger(Import.class);
-	private KappaProducer producer = null;
+	private static final KappaProducer producer =  new KappaProducer();
 	
 	public Import() {
-		producer = new KappaProducer();
 	}
 
 	@POST
@@ -42,7 +42,8 @@ public class Import {
 					}
 				}
 				catch(Exception e2 ){
-					e.printStackTrace();
+					logger.log(Level.ERROR, "unable to parse json: " + e.getMessage());
+					logger.log(Level.INFO, "raw json text is: " + content);
 				}
 			}	
 		}
@@ -54,7 +55,7 @@ public class Import {
 	
 	
 	private void handleJsonObject(JSONObject jsonObject){
-		producer.addMessage(jsonObject.toString(0));
+		Import.producer.addMessage(jsonObject.toString(0));
 		
 	}
 	

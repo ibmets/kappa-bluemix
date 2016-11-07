@@ -28,7 +28,7 @@ public class Count {
 	@POST
 	@Produces(MediaType.TEXT_PLAIN)
 	public String addQuery() {
-		KappaQuery kappaQuery = kappaQueries.runQuery("count all");
+		KappaQuery kappaQuery = kappaQueries.runQuery("count", null);
 		return kappaQuery.getHash();
 	}
 	

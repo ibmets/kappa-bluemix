@@ -1,8 +1,6 @@
 package com.ibm.hursley.kappa.kafka;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -18,42 +16,40 @@ import com.ibm.hursley.kappa.bluemix.Bluemix;
 
 public class KappaQuery extends Thread{
 	
-
-
 	private final Logger logger = Logger.getLogger(KappaQuery.class);
 	
 	private String hash = null;
-	private boolean running = false;
-	private KafkaConsumer<String, byte[]> kafkaConsumer = null;
+	protected boolean running = false;
+	protected KafkaConsumer<String, byte[]> kafkaConsumer = null;
+	protected Object result = null;
+	protected String query = null;
+	protected String filter = null;
 	
 	private ArrayList<KappaListenerInterface> listeners = new ArrayList<>();
 	
-	private Object result = null;
 
-	
-	public KappaQuery(){
-		
-	}
-	
-	public KappaQuery(String query){
-		this.hash = KappaQuery.generateHash(query);
+	public KappaQuery(String query, String filter){
+		this.setQuery(query, filter);
 	}
 
 	public String getHash(){
 		return this.hash;
 	}
 	
-	public void setQuery(String query){
-		this.hash = KappaQuery.generateHash(query);
+	public void setQuery(String query, String filter){
+		this.query = query;
+		this.filter = filter;
+		this.hash = KappaQuery.generateHash(query, filter);
 	}
+		
 	
-	
-	
-	
-	public static String generateHash(String query){
-		String hash = null;
+	public static String generateHash(String query, String filter){
+		String hash = "";
 		if(query != null){
 			hash = query.hashCode() + "";
+		}
+		if(filter != null){
+			hash = hash + filter.hashCode();
 		}
 		return hash;
 	}
@@ -64,7 +60,7 @@ public class KappaQuery extends Thread{
 		// create kafka consumer
 		Properties consumerProperties = (Properties) Bluemix.getConsumerConfiguration().clone();
 		consumerProperties.setProperty("client.id", KappaQueries.getClientId());
-		consumerProperties.setProperty("group.id", "kappa-bluemix-"+this.hash);
+		consumerProperties.setProperty("group.id", "kappa-bluemix-"+KappaQueries.getClientId()+"-"+this.hash);
 		logger.log(Level.INFO, "creating new consumer with ID: " + consumerProperties.getProperty("client.id") + " in group: " + consumerProperties.getProperty("group.id"));
 		this.kafkaConsumer = new KafkaConsumer<>(consumerProperties);
 		
@@ -84,12 +80,19 @@ public class KappaQuery extends Thread{
 	
 	
 	private void resetStream(){
-		logger.log(Level.INFO,"Resetting Kafka stream");
-		kafkaConsumer.poll(1000);
-	    ArrayList<TopicPartition> topicPartions = new ArrayList<>();
-	    topicPartions.add(new TopicPartition("search",0));
-	    kafkaConsumer.seekToBeginning(topicPartions);
-	    kafkaConsumer.commitSync();
+		logger.log(Level.INFO,"Resetting Kafka stream A");
+		try{
+			kafkaConsumer.poll(10000);
+		    ArrayList<TopicPartition> topicPartions = new ArrayList<>();
+		    topicPartions.add(new TopicPartition("search",0));
+		    kafkaConsumer.seekToBeginning(topicPartions);
+		    kafkaConsumer.commitSync();
+		    logger.log(Level.INFO,"Stream Reset");
+		    
+		}
+		catch(Exception e){
+			logger.log(Level.ERROR, "Unable to reset stream: " + e.getMessage());
+		}
 	}
 	
 	
@@ -98,17 +101,13 @@ public class KappaQuery extends Thread{
 		this.running = true;
 		logger.log(Level.INFO, "Running query");
 		int messageCount = 0;
-		int iteration = 0;
 		while(this.running){
-			System.out.println("running query iteration: " + iteration);
-			iteration++;
 			Iterator<ConsumerRecord<String, byte[]>> it = this.kafkaConsumer.poll(10000).iterator();
 			while (it.hasNext()) {
 				messageCount++;
 				this.updateResult(new Integer(messageCount));
 				ConsumerRecord<String, byte[]> record = it.next();
-				String message = new String(record.value(), Charset.forName("UTF-8"));
-				logger.log(Level.INFO, "Message: " + message.toString());
+				//String message = new String(record.value(), Charset.forName("UTF-8"));
 			}
 			this.kafkaConsumer.commitSync();
 			logger.log(Level.INFO, "running, kafka count: " + messageCount);
@@ -120,7 +119,7 @@ public class KappaQuery extends Thread{
 	}
 	
 	
-	private void updateResult(Object result){
+	protected void updateResult(Object result){
 		this.result = result;
 		Iterator<KappaListenerInterface> i = this.listeners.iterator();
 		while(i.hasNext()){
