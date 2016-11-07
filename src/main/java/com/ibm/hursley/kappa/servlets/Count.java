@@ -8,6 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.ibm.hursley.kappa.kafka.KappaQueries;
@@ -27,8 +28,16 @@ public class Count {
 	
 	@POST
 	@Produces(MediaType.TEXT_PLAIN)
-	public String addQuery() {
-		KappaQuery kappaQuery = kappaQueries.runQuery("count", null);
+	public String addQuery(String body) {
+		KappaQuery kappaQuery = null;
+		if(body != null && body.length() > 0){
+			logger.log(Level.INFO, "Received filtered count query: " + body);
+			kappaQuery = kappaQueries.runQuery("count", body);
+		}
+		else{
+			logger.log(Level.INFO, "Received unfiltered count query");
+			kappaQuery = kappaQueries.runQuery("count", null);
+		}
 		return kappaQuery.getHash();
 	}
 	

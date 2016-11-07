@@ -10,6 +10,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import com.ibm.hursley.kappa.bluemix.Bluemix;
 
@@ -24,6 +25,7 @@ public class KappaQuery extends Thread{
 	protected Object result = null;
 	protected String query = null;
 	protected String filter = null;
+	protected JSONObject filterJson = null;
 	
 	private ArrayList<KappaListenerInterface> listeners = new ArrayList<>();
 	
@@ -40,6 +42,15 @@ public class KappaQuery extends Thread{
 		this.query = query;
 		this.filter = filter;
 		this.hash = KappaQuery.generateHash(query, filter);
+		
+		if(filter != null){
+			try{
+				filterJson = new JSONObject(filter);
+			}
+			catch(Exception e){
+				logger.log(Level.ERROR, "Unable to parse filter: " + filter + " " + e.getMessage());
+			}
+		}
 	}
 		
 	
