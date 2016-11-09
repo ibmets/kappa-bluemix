@@ -2,11 +2,13 @@ package com.ibm.hursley.kappa.kafka;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -91,14 +93,24 @@ public class KappaQuery extends Thread{
 	
 	
 	private void resetStream(){
-		logger.log(Level.INFO,"Resetting Kafka stream A");
+		logger.log(Level.INFO,"Resetting Kafka Stream");
 		try{
 			kafkaConsumer.poll(10000);
-		    ArrayList<TopicPartition> topicPartions = new ArrayList<>();
-		    topicPartions.add(new TopicPartition("search",0));
+			
+			ArrayList<TopicPartition> topicPartions = new ArrayList<>();
+			List<PartitionInfo> partitionsInfo =  kafkaConsumer.partitionsFor("search");
+			if(partitionsInfo != null){
+				Iterator<PartitionInfo> i = partitionsInfo.iterator();
+				while(i.hasNext()){
+					PartitionInfo partitionInfo = i.next();
+					logger.log(Level.INFO,"Resetting partition: " + partitionInfo.topic() + ":" + partitionInfo.partition());
+					topicPartions.add(new TopicPartition(partitionInfo.topic(), partitionInfo.partition()));
+				}
+			}
+			
 		    kafkaConsumer.seekToBeginning(topicPartions);
 		    kafkaConsumer.commitSync();
-		    logger.log(Level.INFO,"Stream Reset");
+		    logger.log(Level.INFO,"Stream Reset Done");
 		    
 		}
 		catch(Exception e){

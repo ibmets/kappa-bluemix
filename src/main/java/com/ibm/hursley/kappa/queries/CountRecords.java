@@ -63,7 +63,7 @@ public class CountRecords extends KappaQuery{
 						while(matchFields.hasNext()){
 							String matchField = matchFields.next();
 							if(valueJson.has(matchField) && valueJson.getString(matchField).equalsIgnoreCase(matchJson.getString(matchField))){
-								//System.out.println("matches: " + matchField + ":"+ valueJson.getString(matchField));
+								
 							}
 							else{
 								return false;

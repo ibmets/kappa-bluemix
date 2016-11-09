@@ -1,7 +1,5 @@
 package com.ibm.hursley.kappa.kafka;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.Properties;
 
 import org.apache.kafka.clients.producer.Callback;
@@ -17,7 +15,6 @@ public class KappaProducer {
 	
 	private final Logger logger = Logger.getLogger(KappaProducer.class);
 	private static KafkaProducer<String, byte[]> kafkaProducer = null;
-	private static String clientId = null;
 	
 	public KappaProducer(){
 		if(KappaProducer.kafkaProducer == null){
@@ -28,27 +25,15 @@ public class KappaProducer {
 	private synchronized void init(){
 		if(KappaProducer.kafkaProducer == null){
 			logger.log(Level.INFO, "initialising Kafka producer");
-			//KappaProducer.clientId = KappaProducer.createClientId();
-			
 			Properties producerProperties = (Properties) Bluemix.getProducerConfiguration().clone();
-			//producerProperties.setProperty("client.id", this.getClientId());
 			KappaProducer.kafkaProducer = new KafkaProducer<>(producerProperties);
 		}
 	}
 	
-	private static String createClientId(){
-		SecureRandom random = new SecureRandom();
-		return new BigInteger(130, random).toString(32);
-	}
-	
-	private String getClientId(){
-		return KappaProducer.clientId;
-	}
 	
 	private KafkaProducer<String, byte[]> getProducer(){
 		return KappaProducer.kafkaProducer;
 	}
-	
 	
 	public void addMessage(String message){
 		KafkaProducer<String, byte[]> kafkaProducer = getProducer();
@@ -64,8 +49,6 @@ public class KappaProducer {
 					}
 				}
 			});
-			
-			
 		}
 		catch(Exception e){
 			e.printStackTrace();
