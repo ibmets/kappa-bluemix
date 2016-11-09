@@ -75,7 +75,13 @@ public class KappaQuery extends Thread{
 		consumerProperties.setProperty("client.id", KappaQueries.getClientId());
 		consumerProperties.setProperty("group.id", "kappa-bluemix-"+KappaQueries.getClientId()+"-"+this.hash);
 		logger.log(Level.INFO, "creating new consumer with ID: " + consumerProperties.getProperty("client.id") + " in group: " + consumerProperties.getProperty("group.id"));
-		this.kafkaConsumer = new KafkaConsumer<>(consumerProperties);
+		
+		try{
+			this.kafkaConsumer = new KafkaConsumer<>(consumerProperties);
+		}
+		catch(Exception e){
+			// beanserver logging can create an aleready exists exception
+		}
 		
 		// set topics
 		ArrayList<String> topicList = new ArrayList<String>();

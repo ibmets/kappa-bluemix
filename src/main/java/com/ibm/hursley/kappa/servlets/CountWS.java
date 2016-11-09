@@ -37,7 +37,6 @@ public class CountWS {
 			kappaQuery.addListener(new KappaListenerInterface() {
 				@Override
 				public void updateResult(String data) {
-					System.out.println("Sending data to session");
 					try {
 						if(session != null && session.isOpen()){
 							session.getBasicRemote().sendText(data);
