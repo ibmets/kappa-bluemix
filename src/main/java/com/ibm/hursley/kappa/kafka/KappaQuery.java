@@ -1,6 +1,7 @@
 package com.ibm.hursley.kappa.kafka;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -29,7 +30,7 @@ public class KappaQuery extends Thread{
 	protected String filter = null;
 	protected JSONObject filterJson = null;
 	
-	private ArrayList<KappaListenerInterface> listeners = new ArrayList<>();
+	private HashMap<String, KappaListenerInterface> listeners = new HashMap<String, KappaListenerInterface>();
 	
 
 	public KappaQuery(String query, String filter){
@@ -69,6 +70,7 @@ public class KappaQuery extends Thread{
 	
 	
 	public void initKafka(){
+		this.running = true;
 		
 		// create kafka consumer
 		Properties consumerProperties = (Properties) Bluemix.getConsumerConfiguration().clone();
@@ -94,6 +96,7 @@ public class KappaQuery extends Thread{
 
 		
 	public void shutdown(){
+		logger.log(Level.INFO, "Shutting down query: " + this.getHash());
 		this.running = false;
 	}
 	
@@ -127,7 +130,7 @@ public class KappaQuery extends Thread{
 	
 	@Override
 	public void run() {
-		this.running = true;
+
 		logger.log(Level.INFO, "Running query");
 		int messageCount = 0;
 		while(this.running){
@@ -150,9 +153,9 @@ public class KappaQuery extends Thread{
 	
 	protected void updateResult(Object result){
 		this.result = result;
-		Iterator<KappaListenerInterface> i = this.listeners.iterator();
-		while(i.hasNext()){
-			KappaListenerInterface listener = i.next();
+		Iterator<String> keys = this.listeners.keySet().iterator();
+		while(keys.hasNext()){
+			KappaListenerInterface listener = this.listeners.get(keys.next());
 			if(listener != null){
 				listener.updateResult(getResult());
 			}
@@ -169,11 +172,20 @@ public class KappaQuery extends Thread{
 	}
 	
 	
-	public void addListener(KappaListenerInterface kappaListener, boolean sendInitial){
-		this.listeners.add(kappaListener);
+	public void addListener(KappaListenerInterface kappaListener, String sessionId, boolean sendInitial){
+		this.listeners.put(sessionId, kappaListener);
 		if(sendInitial){
 			kappaListener.updateResult(getResult());
 		}
+	}
+	
+	public void removeListener(String sessionId){
+		this.listeners.remove(sessionId);
+		if(this.listeners.size() < 1){
+			logger.log(Level.INFO, "Query " + this.getHash() + " has no more listeners, stopping and removing");
+			KappaQueries.removeQuery(this.getHash());	
+		}
+		
 	}
 
 	public boolean isRunning() {

@@ -49,6 +49,15 @@ public class CountRecords extends KappaQuery{
 	}
 	
 	
+	public String getResult(){
+		String result = "0";
+		if(this.result instanceof Integer){
+			result = ((Integer) this.result).intValue() + "";
+		}
+		return result;
+	}
+	
+	
 	private boolean isMatch(ConsumerRecord<String, byte[]> record){
 		boolean match = true;
 		

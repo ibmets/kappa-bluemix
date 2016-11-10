@@ -91,7 +91,16 @@ public class KappaQueries {
 		    startupThread.start();
 		    return kappaQuery;
 		}
-
+	}
+	
+	
+	public static void removeQuery(String hash){
+		KappaQuery kappaQuery = KappaQueries.queries.get(hash);
+		KappaQueries.queries.remove(hash);
+		
+		if(kappaQuery != null){
+			kappaQuery.shutdown();
+		}
 	}
 	
 	public KappaQuery getQuery(String hash){

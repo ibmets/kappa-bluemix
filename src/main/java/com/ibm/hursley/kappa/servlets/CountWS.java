@@ -29,12 +29,14 @@ public class CountWS {
 	
 	@OnOpen
 	public void open(final Session session, @PathParam("queryhash") String queryHash) {
-		System.out.println("ws open:" + queryHash);
+		System.out.println("ws open:" + queryHash + " session: " + session.getId());
 		
 		KappaQuery kappaQuery = kappaQueries.getQuery(queryHash);
 		
 		if(kappaQuery != null){
+			
 			kappaQuery.addListener(new KappaListenerInterface() {
+				
 				@Override
 				public void updateResult(String data) {
 					try {
@@ -46,7 +48,7 @@ public class CountWS {
 						e.printStackTrace();
 					}
 				}
-			},true);
+			},session.getId(), true);
 		}
 		else{
 		
@@ -71,8 +73,14 @@ public class CountWS {
 	}
 	
 	@OnClose
-	public void close(Session session, CloseReason reason) {
-		System.out.println("ws: close");
+	public void close(Session session, CloseReason reason, @PathParam("queryhash") String queryHash) {
+		System.out.println("ws: close session: " + session.getId() + " queryHash:" + queryHash);
+		if(queryHash != null && queryHash.length() > 0){
+			KappaQuery kappaQuery = kappaQueries.getQuery(queryHash);
+			if(kappaQuery != null){
+				kappaQuery.removeListener(session.getId());
+			}
+		}
 	}
 	
 	@OnError
