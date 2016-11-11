@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import com.ibm.hursley.kappa.bluemix.Bluemix;
 import com.ibm.hursley.kappa.queries.CountRecords;
+import com.ibm.hursley.kappa.queries.tfl.TrainLocations;
 
 public class KappaQueries {
 	
@@ -127,6 +128,10 @@ public class KappaQueries {
 		
 		if(query != null && query.equalsIgnoreCase("count")){
 			final KappaQuery kappaQuery = new CountRecords(query, filter);
+			return kappaQuery;
+		}
+		if(query != null && query.equalsIgnoreCase("tfl-locations")){
+			final KappaQuery kappaQuery = new TrainLocations(query, filter);
 			return kappaQuery;
 		}
 		else{

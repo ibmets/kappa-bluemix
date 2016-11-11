@@ -17,13 +17,13 @@ import com.ibm.hursley.kappa.kafka.KappaQuery;
 
 
 
-@ServerEndpoint(value = "/ws/count/{queryhash}")
-public class CountWS {
+@ServerEndpoint(value = "/ws/query/{queryhash}")
+public class QueryWS {
 	
 	
 	private KappaQueries kappaQueries = null;
 	
-	public CountWS() {
+	public QueryWS() {
 		kappaQueries = new KappaQueries();
 	}
 	

@@ -1,4 +1,4 @@
-//var socket = new WebSocket("ws://localhost:9080/kappa-bluemix/ws/count/1350186768");
+//var socket = new WebSocket("ws://localhost:9080/kappa-bluemix/ws/query/1350186768");
 var socket = null;
 var messagesToProcess = [];
 
@@ -7,7 +7,7 @@ function queryCount(){
     $('#count_answer').html('processing');
     $.ajax({
       type: "POST",
-      url: 'rest/count',
+      url: 'rest/query',
       data: $('#filter').val(),
       dataType: 'text',
       success: function(data){
@@ -23,8 +23,35 @@ function queryCount(){
   });
 }
 
+
+
 function updateAnswer(){
   $('#count_answer').html(messagesToProcess.shift());
+}
+
+function queryTflLocations(){
+  resetWs(function(){
+    $('#tfl_locations_answer').html('processing');
+    $.ajax({
+      type: "POST",
+      url: 'rest/query/tfl-locations',
+      data: $('#tfl_locations_filter').val(),
+      dataType: 'text',
+      success: function(data){
+        if(data){
+          socket = new WebSocket(getWsUrl()+data);
+          socket.onmessage = function (event) {;
+            messagesToProcess.push(event.data);
+            updateTflLocationsAnswer();
+          }
+        }
+      }
+    });
+  });
+}
+
+function updateTflLocationsAnswer(){
+  $('#tfl_locations_answer').html(messagesToProcess.shift());
 }
 
 function getWsUrl(){
@@ -36,7 +63,7 @@ function getWsUrl(){
     new_uri = "ws:";
   }
   new_uri += "//" + loc.host;
-  new_uri += loc.pathname + "ws/count/";
+  new_uri += loc.pathname + "ws/query/";
   return new_uri;
 }
 

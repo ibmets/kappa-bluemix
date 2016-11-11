@@ -14,14 +14,14 @@ import org.apache.log4j.Logger;
 import com.ibm.hursley.kappa.kafka.KappaQueries;
 import com.ibm.hursley.kappa.kafka.KappaQuery;
 
-@Path("/count")
-public class Count {
+@Path("/query")
+public class Query {
 	
 	private KappaQueries kappaQueries = null;
 
-	private final Logger logger = Logger.getLogger(Count.class);
+	private final Logger logger = Logger.getLogger(Query.class);
 	
-	public Count(){
+	public Query(){
 		kappaQueries = new KappaQueries();
 	}
 	
@@ -31,8 +31,28 @@ public class Count {
 	public String addQuery(String body) {
 		KappaQuery kappaQuery = null;
 		if(body != null && body.length() > 0){
-			logger.log(Level.INFO, "Received filtered count query: " + body);
+			logger.log(Level.INFO, "Received filtered default query filter: "+ body);
 			kappaQuery = kappaQueries.runQuery("count", body);
+		}
+		else{
+			logger.log(Level.INFO, "Received unfiltered count query");
+			kappaQuery = kappaQueries.runQuery("count", null);
+		}
+		return kappaQuery.getHash();
+	}
+	
+	
+	@POST
+	@Path("/{type}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addQueryWithType(@PathParam("type") String queryType, String body) {
+		KappaQuery kappaQuery = null;
+		if(queryType !=null && queryType.length() > 0 && body != null && body.length() > 0){
+			logger.log(Level.INFO, "Received filtered query: " + queryType + " filter:"+ body);
+			kappaQuery = kappaQueries.runQuery(queryType, body);
+		}
+		else if(queryType !=null && queryType.length() > 0){
+			kappaQuery = kappaQueries.runQuery(queryType, null);
 		}
 		else{
 			logger.log(Level.INFO, "Received unfiltered count query");

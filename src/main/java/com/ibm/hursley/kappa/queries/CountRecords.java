@@ -13,7 +13,6 @@ public class CountRecords extends KappaQuery{
 	
 	private final Logger logger = Logger.getLogger(CountRecords.class);
 	
-	
 	public CountRecords(String query, String filter){
 		super(query,filter);
 	}
@@ -26,7 +25,6 @@ public class CountRecords extends KappaQuery{
 			Iterator<ConsumerRecord<String, byte[]>> it = this.kafkaConsumer.poll(10000).iterator();
 			while (it.hasNext()) {
 				ConsumerRecord<String, byte[]> record = it.next();
-				
 				if(filterJson != null){
 					if(isMatch(record)){
 						messageCount++;
@@ -35,9 +33,7 @@ public class CountRecords extends KappaQuery{
 				else{
 					messageCount++;
 				}
-
-				this.updateResult(new Integer(messageCount));
-				
+				this.updateResult(new Integer(messageCount));	
 			}
 			this.kafkaConsumer.commitSync();
 			logger.log(Level.INFO, "running, kafka count: " + messageCount);
