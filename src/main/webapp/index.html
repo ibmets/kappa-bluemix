@@ -9,6 +9,11 @@
 		<button onclick="queryCount()">Count</button>
 		<span id="count_answer">0</span>
 
+    <h1>Record Search</h1>
+		<textarea cols="80" id="search_filter">{ "match": { "lineName": "Northern" } }</textarea>
+		<button onclick="querySearch()">Search</button>
+		<span id="search_answer"></span>
+
     <h1>Tube Locations</h1>
     <textarea cols="80" id="tfl_locations_filter"></textarea>
     <button onclick="queryTflLocations()">Count</button>
@@ -16,5 +21,6 @@
   </body>
 
 	<script src="js/jquery-3.1.1.min.js"></script>
+  <script src="js/kappa-client.js"></script>
   <script src="js/site.js"></script>
 </html>

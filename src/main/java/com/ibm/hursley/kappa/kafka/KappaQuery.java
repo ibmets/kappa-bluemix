@@ -13,6 +13,7 @@ import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.ibm.hursley.kappa.bluemix.Bluemix;
@@ -168,6 +169,7 @@ public class KappaQuery extends Thread{
 		if(this.result instanceof Integer){
 			result = ((Integer) this.result).intValue() + "";
 		}
+		
 		return result;
 	}
 	
@@ -190,6 +192,44 @@ public class KappaQuery extends Thread{
 
 	public boolean isRunning() {
 		return running;
+	}
+	
+	
+	protected boolean isMatch(ConsumerRecord<String, byte[]> record){
+		boolean match = true;
+		
+		String valueString  = new String(record.value());
+		if(valueString != null){
+			try{
+				JSONObject valueJson = new JSONObject(valueString);
+				if(valueJson != null){
+					if(filterJson.has("match")){
+						JSONObject matchJson = filterJson.getJSONObject("match");
+						Iterator<String> matchFields = matchJson.keys();
+						while(matchFields.hasNext()){
+							String matchField = matchFields.next();
+							if(valueJson.has(matchField) && valueJson.getString(matchField).equalsIgnoreCase(matchJson.getString(matchField))){
+								
+							}
+							else{
+								return false;
+							}
+						}
+					}
+				}
+				else{
+					match = false;
+				}
+			}
+			catch(Exception e){
+				match = false;
+			}
+		}
+		else{
+			match = false;
+		}
+		
+		return match;
 	}
 	
 	

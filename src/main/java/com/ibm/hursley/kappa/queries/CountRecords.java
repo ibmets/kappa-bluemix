@@ -54,42 +54,7 @@ public class CountRecords extends KappaQuery{
 	}
 	
 	
-	private boolean isMatch(ConsumerRecord<String, byte[]> record){
-		boolean match = true;
-		
-		String valueString  = new String(record.value());
-		if(valueString != null){
-			try{
-				JSONObject valueJson = new JSONObject(valueString);
-				if(valueJson != null){
-					if(filterJson.has("match")){
-						JSONObject matchJson = filterJson.getJSONObject("match");
-						Iterator<String> matchFields = matchJson.keys();
-						while(matchFields.hasNext()){
-							String matchField = matchFields.next();
-							if(valueJson.has(matchField) && valueJson.getString(matchField).equalsIgnoreCase(matchJson.getString(matchField))){
-								
-							}
-							else{
-								return false;
-							}
-						}
-					}
-				}
-				else{
-					match = false;
-				}
-			}
-			catch(Exception e){
-				match = false;
-			}
-		}
-		else{
-			match = false;
-		}
-		
-		return match;
-	}
+	
 	
 	
 	
