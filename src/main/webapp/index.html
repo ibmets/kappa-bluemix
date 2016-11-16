@@ -10,7 +10,7 @@
 		<span id="count_answer">0</span>
 
     <h1>Record Search</h1>
-		<textarea cols="80" id="search_filter">{ "match": { "lineName": "Northern" } }</textarea>
+		<textarea cols="80" id="search_filter">{ "match": { "lineName": "Northern" }, "sort":[{"expectedArrival" : {"order" : "desc"}}]}</textarea>
 		<button onclick="querySearch()">Search</button>
 		<span id="search_answer"></span>
 

@@ -1,6 +1,7 @@
 package com.ibm.hursley.kappa.queries;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -15,6 +16,7 @@ public class SearchRecords extends KappaQuery{
 	
 	private final Logger logger = Logger.getLogger(SearchRecords.class);
 	
+	
 	public SearchRecords(String query, String filter){
 		super(query,filter);
 	}
@@ -23,7 +25,27 @@ public class SearchRecords extends KappaQuery{
 		this.running = true;
 		logger.log(Level.INFO, "Running SearchRecords query");
 		
-		int resultsSize = 10;
+		// setup sorter
+		String sortKey = null;
+		String sortOrder = "asc";
+		SearchComparator searchComparator = null;
+		if(filterJson != null && filterJson.has("sort") && filterJson.getJSONArray("sort").length() > 0){
+			JSONObject sortCriteria = filterJson.getJSONArray("sort").getJSONObject(0);
+			Iterator<String> i = sortCriteria.keySet().iterator();
+			while(i != null && i.hasNext()){
+				sortKey = i.next();
+			}
+			
+			if(sortKey != null && sortCriteria.getJSONObject(sortKey).has("order")){
+				sortOrder = sortCriteria.getJSONObject(sortKey).getString("order");
+			}
+		}
+		
+		if(sortKey != null){
+			searchComparator = new SearchComparator(sortKey,sortOrder);
+		}
+	
+	
 		ArrayList<JSONObject> results = new ArrayList<>();
 		
 		while(this.running){
@@ -36,6 +58,7 @@ public class SearchRecords extends KappaQuery{
 						if(valueString != null){
 							try{
 								JSONObject valueJson = new JSONObject(valueString);
+								//results = this.insertIntoList(results, valueJson);
 								results.add(valueJson);
 							}
 							catch(Exception e){
@@ -47,20 +70,25 @@ public class SearchRecords extends KappaQuery{
 					String valueString  = new String(record.value());
 					try{
 						JSONObject valueJson = new JSONObject(valueString);
+						//results = this.insertIntoList(results, valueJson);
 						results.add(valueJson);
 					}
 					catch(Exception e){
 					}
 				}
-					
-				if(results.size() >= resultsSize){
-					results.subList(0, results.size()-resultsSize).clear();
-				}
-					
-				this.updateResult(results);	
 			}
+			
+			if(searchComparator != null){
+				System.out.println("doing sort");
+				///results.sort(searchComparator);
+				//results.sort(searchComparator);
+				Collections.sort(results,searchComparator);
+			}
+			results = this.trimResults(results);	
+			this.updateResult(results);	
+			
 			this.kafkaConsumer.commitSync();
-			logger.log(Level.INFO, "running, kafka search, results: " + results.size() + " (max:"+resultsSize+")");
+			logger.log(Level.INFO, "running, kafka search, results: " + results.size());
 		}
 		
 		kafkaConsumer.close();
@@ -85,7 +113,84 @@ public class SearchRecords extends KappaQuery{
 	}
 	
 	
+	private ArrayList<JSONObject> trimResults(ArrayList<JSONObject> results){
+		// trim results to keep within returned size
+		int resultsSize = 10;
+		if(results.size() >= resultsSize){
+			results.subList(0, results.size()-resultsSize).clear();
+		}
+		return results;
+	}
 	
+	/*
+	private ArrayList<JSONObject> insertIntoList(ArrayList<JSONObject> results, JSONObject value){
+
+		// for now only work with single sort criteria
+		if(filterJson != null && filterJson.has("sort") && filterJson.getJSONArray("sort").length() > 0){
+			JSONObject sortCriteria = filterJson.getJSONArray("sort").getJSONObject(0);
+			Iterator<String> i = sortCriteria.keySet().iterator();
+			String sortKey = null;
+			while(i != null && i.hasNext()){
+				sortKey = i.next();
+			}
+			
+			if(sortKey != null && value.has(sortKey)){
+				String sortValue = value.getString(sortKey);
+				
+				if(sortCriteria.getJSONObject(sortKey).has("order") && sortCriteria.getJSONObject(sortKey).getString("order").equalsIgnoreCase("asc")){
+					for(int j=0; j < results.size(); j++){
+						JSONObject testItem = results.get(j);
+						if(testItem == null || !testItem.has(sortKey)){
+							results.add(j, value);
+							return results;
+						}
+						else if(compareValues(sortValue, testItem.getString(sortKey)) <= 0){
+							results.add(j,value);
+							return results;
+						}
+					}
+					// add to the start
+					results.add(0,value);
+				}
+				else{
+					System.out.println("SORTING DESC");
+					for(int j=0; j < results.size(); j++){
+						JSONObject testItem = results.get(j);
+						if(testItem == null || !testItem.has(sortKey)){
+							results.add(j, value);
+							return results;
+						}
+						else if(compareValues(sortValue, testItem.getString(sortKey)) >= 0){
+							results.add(j,value);
+							return results;
+						}
+					}
+					// add to the end
+					results.add(value);
+				}
+			}
+		}
+		else{
+			results.add(value);
+		}
+		
+		return results;
+	}
+	*/
+	
+	
+	private int compareValues(String valueA, String valueB){
+		int compare = 0;
+		if(valueA.length() < 1){
+			return 1;
+		}
+		if(valueB.length() < 1){
+			return -1;
+		}
+		
+		compare = valueA.compareTo(valueB);
+		return compare;
+	}
 	
 	
 	
