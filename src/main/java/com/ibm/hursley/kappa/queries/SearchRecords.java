@@ -28,6 +28,8 @@ public class SearchRecords extends KappaQuery{
 		// setup sorter
 		String sortKey = null;
 		String sortOrder = "asc";
+		int sortLimit = 10;
+		
 		SearchComparator searchComparator = null;
 		if(filterJson != null && filterJson.has("sort") && filterJson.getJSONArray("sort").length() > 0){
 			JSONObject sortCriteria = filterJson.getJSONArray("sort").getJSONObject(0);
@@ -38,6 +40,10 @@ public class SearchRecords extends KappaQuery{
 			
 			if(sortKey != null && sortCriteria.getJSONObject(sortKey).has("order")){
 				sortOrder = sortCriteria.getJSONObject(sortKey).getString("order");
+			}
+			
+			if(sortKey != null && sortCriteria.getJSONObject(sortKey).has("limit")){
+				sortLimit = sortCriteria.getJSONObject(sortKey).getInt("limit");
 			}
 		}
 		
@@ -80,7 +86,8 @@ public class SearchRecords extends KappaQuery{
 				results = searchComparator.filterList(results);
 				Collections.sort(results,searchComparator);
 			}
-			results = this.trimResults(results);	
+			
+			results = this.trimResults(results, sortLimit);	
 			this.updateResult(results);	
 			
 			this.kafkaConsumer.commitSync();
@@ -109,70 +116,15 @@ public class SearchRecords extends KappaQuery{
 	}
 	
 	
-	private ArrayList<JSONObject> trimResults(ArrayList<JSONObject> results){
+	private ArrayList<JSONObject> trimResults(ArrayList<JSONObject> results, int limit){
 		// trim results to keep within returned size
-		int resultsSize = 10;
-		if(results.size() >= resultsSize){
-			results.subList(0, results.size()-resultsSize).clear();
+		if(results.size() >= limit){
+			results.subList(limit, results.size()).clear();
 		}
 		return results;
 	}
 	
-	/*
-	private ArrayList<JSONObject> insertIntoList(ArrayList<JSONObject> results, JSONObject value){
-
-		// for now only work with single sort criteria
-		if(filterJson != null && filterJson.has("sort") && filterJson.getJSONArray("sort").length() > 0){
-			JSONObject sortCriteria = filterJson.getJSONArray("sort").getJSONObject(0);
-			Iterator<String> i = sortCriteria.keySet().iterator();
-			String sortKey = null;
-			while(i != null && i.hasNext()){
-				sortKey = i.next();
-			}
-			
-			if(sortKey != null && value.has(sortKey)){
-				String sortValue = value.getString(sortKey);
-				
-				if(sortCriteria.getJSONObject(sortKey).has("order") && sortCriteria.getJSONObject(sortKey).getString("order").equalsIgnoreCase("asc")){
-					for(int j=0; j < results.size(); j++){
-						JSONObject testItem = results.get(j);
-						if(testItem == null || !testItem.has(sortKey)){
-							results.add(j, value);
-							return results;
-						}
-						else if(compareValues(sortValue, testItem.getString(sortKey)) <= 0){
-							results.add(j,value);
-							return results;
-						}
-					}
-					// add to the start
-					results.add(0,value);
-				}
-				else{
-					System.out.println("SORTING DESC");
-					for(int j=0; j < results.size(); j++){
-						JSONObject testItem = results.get(j);
-						if(testItem == null || !testItem.has(sortKey)){
-							results.add(j, value);
-							return results;
-						}
-						else if(compareValues(sortValue, testItem.getString(sortKey)) >= 0){
-							results.add(j,value);
-							return results;
-						}
-					}
-					// add to the end
-					results.add(value);
-				}
-			}
-		}
-		else{
-			results.add(value);
-		}
-		
-		return results;
-	}
-	*/
+	
 	
 	
 	private int compareValues(String valueA, String valueB){

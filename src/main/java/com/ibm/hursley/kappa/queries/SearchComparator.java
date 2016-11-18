@@ -1,6 +1,5 @@
 package com.ibm.hursley.kappa.queries;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -16,6 +15,7 @@ public class SearchComparator implements Comparator<JSONObject>{
 
 	private String sortField = null;
 	private String sortOrder = null;
+	private static final Parser DATE_PARSER = new Parser();
 	
 	public SearchComparator(String field, String order) {
 		this.sortField = field;
@@ -104,8 +104,8 @@ public class SearchComparator implements Comparator<JSONObject>{
 	public Date parseAsDate(String value){
 		value = value.trim();
 		if(value.split("\\s+").length == 1){
-			Parser parser = new Parser();
-			List<DateGroup> groups = parser.parse(value);
+			
+			List<DateGroup> groups = SearchComparator.DATE_PARSER.parse(value);
 			if(groups.size() == 1){
 				if(groups.get(0).getDates().size() > 0){
 					return groups.get(0).getDates().get(0);
