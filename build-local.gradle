@@ -55,6 +55,7 @@ dependencies {
     compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.23.2'
     compile 'org.json:json:20151123'
     compile group: 'javax.websocket', name: 'javax.websocket-api', version: '1.1'
+    compile group: 'com.joestelmach', name: 'natty', version: '0.12'
 }
 
 // move generated war file into the DefaultServer/apps diretory

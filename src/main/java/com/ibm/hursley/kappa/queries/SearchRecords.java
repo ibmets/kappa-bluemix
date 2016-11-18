@@ -58,7 +58,6 @@ public class SearchRecords extends KappaQuery{
 						if(valueString != null){
 							try{
 								JSONObject valueJson = new JSONObject(valueString);
-								//results = this.insertIntoList(results, valueJson);
 								results.add(valueJson);
 							}
 							catch(Exception e){
@@ -70,7 +69,6 @@ public class SearchRecords extends KappaQuery{
 					String valueString  = new String(record.value());
 					try{
 						JSONObject valueJson = new JSONObject(valueString);
-						//results = this.insertIntoList(results, valueJson);
 						results.add(valueJson);
 					}
 					catch(Exception e){
@@ -79,9 +77,7 @@ public class SearchRecords extends KappaQuery{
 			}
 			
 			if(searchComparator != null){
-				System.out.println("doing sort");
-				///results.sort(searchComparator);
-				//results.sort(searchComparator);
+				results = searchComparator.filterList(results);
 				Collections.sort(results,searchComparator);
 			}
 			results = this.trimResults(results);	
