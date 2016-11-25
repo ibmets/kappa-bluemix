@@ -233,4 +233,12 @@ public class KappaQuery extends Thread{
 	}
 	
 	
+	protected ArrayList<JSONObject> trimResults(ArrayList<JSONObject> results, int limit){
+		// trim results to keep within returned size
+		if(results.size() >= limit){
+			results.subList(limit, results.size()).clear();
+		}
+		return results;
+	}
+	
 }

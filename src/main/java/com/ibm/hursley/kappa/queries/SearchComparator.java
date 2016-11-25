@@ -31,7 +31,10 @@ public class SearchComparator implements Comparator<JSONObject>{
 			while(i.hasNext()){
 				JSONObject item = i.next();
 				if(this.sortField != null && this.sortField.length() > 0){
-					if(item != null && item.has(this.sortField) && item.getString(this.sortField).length() > 0){
+					if(item != null && item.has(this.sortField) && item.optString(this.sortField).length() > 0){
+						filteredList.add(item);
+					}
+					else if(item != null && item.has(this.sortField) && (item.optInt(this.sortField,Integer.MIN_VALUE) > Integer.MIN_VALUE)){
 						filteredList.add(item);
 					}
 				}
@@ -49,22 +52,24 @@ public class SearchComparator implements Comparator<JSONObject>{
 	public int compare(JSONObject o1, JSONObject o2) {
 		
 		// handle empty or null values
-		if((o1 == null || !o1.has(sortField) || o1.getString(sortField).length() < 1) && (o2 == null || !o2.has(sortField) || o2.getString(sortField).length() < 1)){
+		if((o1 == null || !o1.has(sortField) || o1.optString(sortField).length() < 1) && (o2 == null || !o2.has(sortField) || o2.optString(sortField).length() < 1)){
 			return 0;
 		}
-		if(o1 == null || !o1.has(sortField) || o1.getString(sortField).length() < 1){
+		if(o1 == null || !o1.has(sortField) || o1.optString(sortField).length() < 1){
 			return -1;
 		}
-		if(o2 == null || !o2.has(sortField) || o2.getString(sortField).length() < 1){
+		if(o2 == null || !o2.has(sortField) || o2.optString(sortField).length() < 1){
 			return 1;
 		}
 		
-		String fieldValue1 = o1.getString(sortField);
-		String fieldValue2 = o2.getString(sortField);
+		String fieldValue1 = o1.optString(sortField);
+		String fieldValue2 = o2.optString(sortField);
 		
 		Date dateField1 = parseAsDate(fieldValue1);
 		Date dateField2 = parseAsDate(fieldValue2);
 		
+		Integer intField1 = parseAsInt(fieldValue1);
+		Integer intField2 = parseAsInt(fieldValue2);
 		
 		if(dateField1 != null && dateField2 != null){
 			// date strings
@@ -87,6 +92,14 @@ public class SearchComparator implements Comparator<JSONObject>{
 				else{
 					return -1;
 				}
+			}
+		}
+		else if(intField1 != null && intField2 != null){
+			if(sortOrder.equalsIgnoreCase("asc")){
+				return intField1.intValue() - intField2.intValue();
+			}
+			else{
+				return intField2.intValue() - intField1.intValue();
 			}
 		}
 		else{
@@ -113,6 +126,17 @@ public class SearchComparator implements Comparator<JSONObject>{
 			}
 		}
 		return null;
+	}
+	
+	
+	public Integer parseAsInt(String value){
+		try{
+			int parsedInt = Integer.parseInt(value);
+			return new Integer(parsedInt);
+		}
+		catch(Exception e){
+			return null;
+		}
 	}
 	
 }
