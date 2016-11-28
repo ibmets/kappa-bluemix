@@ -1,4 +1,4 @@
-package com.ibm.hursley.kappa.queries.tfl;
+package com.ibm.hursley.kappa.queries;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,48 +14,66 @@ import org.json.JSONObject;
 import com.ibm.hursley.kappa.kafka.KappaQuery;
 import com.ibm.hursley.kappa.queries.SearchComparator;
 
-public class TrainLocations extends KappaQuery{
+public class GroupCount extends KappaQuery{
 	
-	private final Logger logger = Logger.getLogger(TrainLocations.class);
+	private final Logger logger = Logger.getLogger(GroupCount.class);
+	//private String groupField = "currentLocation";
+	private String groupField = null;;
 	
-	public TrainLocations(String query, String filter){
+	//{"group_by":{"field":"lineName"}
+	
+	public GroupCount(String query, String filter){
 		super(query,filter);
+		this.parseGroupField();
+	}
+	
+	private void parseGroupField(){
+		if(this.filterJson!=null){
+			if(this.filterJson.has("group_by") && this.filterJson.getJSONObject("group_by")!=null){
+				JSONObject groupByObject = this.filterJson.getJSONObject("group_by");
+				if(groupByObject.has("field") && groupByObject.optString("field").length()>0){
+					this.groupField = groupByObject.getString("field");
+				}
+			}
+		}
 	}
 	
 	public void run() {
 		this.running = true;
-		logger.log(Level.INFO, "Running TrainLocation query");
+		logger.log(Level.INFO, "Running GroupCount query");
 	
-		HashMap<String, Integer> trainLocationCounts = new HashMap<>();
+		HashMap<String, Integer> groupElementsCounts = new HashMap<>();
 		
-		while(this.running){
-			Iterator<ConsumerRecord<String, byte[]>> it = this.kafkaConsumer.poll(10000).iterator();
-			while (it.hasNext()) {
-				ConsumerRecord<String, byte[]> record = it.next();
-				String valueString  = new String(record.value());
-				if(valueString != null){
-					try{
-						JSONObject valueJson = new JSONObject(valueString);
-						if(valueJson != null){
-							if(valueJson.has("currentLocation") && valueJson.getString("currentLocation")!= null && valueJson.getString("currentLocation").length() > 0){
-								int currentCount = 0;
-								if(trainLocationCounts.containsKey(valueJson.getString("currentLocation"))){
-									currentCount = (trainLocationCounts.get(valueJson.getString("currentLocation"))).intValue();
+		if(this.groupField != null && groupField.length() > 0){
+			while(this.running){
+				Iterator<ConsumerRecord<String, byte[]>> it = this.kafkaConsumer.poll(10000).iterator();
+				while (it.hasNext()) {
+					ConsumerRecord<String, byte[]> record = it.next();
+					String valueString  = new String(record.value());
+					if(valueString != null){
+						try{
+							JSONObject valueJson = new JSONObject(valueString);
+							if(valueJson != null){
+								if(valueJson.has(groupField) && valueJson.getString(groupField)!= null && valueJson.getString(groupField).length() > 0){
+									int currentCount = 0;
+									if(groupElementsCounts.containsKey(valueJson.getString(groupField))){
+										currentCount = (groupElementsCounts.get(valueJson.getString(groupField))).intValue();
+									}
+									currentCount++;
+									groupElementsCounts.put(valueJson.getString(groupField), new Integer(currentCount));
 								}
-								currentCount++;
-								trainLocationCounts.put(valueJson.getString("currentLocation"), new Integer(currentCount));
 							}
 						}
-					}
-					catch(Exception e){
-						logger.log(Level.ERROR, "Exception parsing " + e.getMessage());
-						//logger.log(Level.INFO, valueString);
+						catch(Exception e){
+							logger.log(Level.ERROR, "Exception parsing " + e.getMessage());
+							//logger.log(Level.INFO, valueString);
+						}
 					}
 				}
+				
+				this.updateResult(groupElementsCounts);
+				this.kafkaConsumer.commitSync();
 			}
-			
-			this.updateResult(trainLocationCounts);
-			this.kafkaConsumer.commitSync();
 		}
 	
 		kafkaConsumer.close();
@@ -71,10 +89,12 @@ public class TrainLocations extends KappaQuery{
 			Iterator<String> keysIterator =  locationsHashmap.keySet().iterator();
 			while(keysIterator.hasNext()){
 				String key = keysIterator.next();
-				JSONObject location = new JSONObject();
-				location.put("location", key);
-				location.put("count",locationsHashmap.get(key).intValue());
-				sortableList.add(location);
+				if(this.groupField != null){
+					JSONObject result = new JSONObject();
+					result.put(this.groupField, key);
+					result.put("count",locationsHashmap.get(key).intValue());
+					sortableList.add(result);
+				}
 			}
 		}
 		

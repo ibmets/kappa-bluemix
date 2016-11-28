@@ -1,4 +1,3 @@
-//var socket = new WebSocket("ws://localhost:9080/kappa-bluemix/ws/query/1350186768");
 var socket = null;
 var messagesToProcess = [];
 
@@ -57,6 +56,7 @@ function updateCountAnswer(){
   $('#count_answer').html(messagesToProcess.shift());
 }
 
+
 function querySearch(){
   resetWs(function(){
     $('#search_answer').html('processing');
@@ -78,25 +78,26 @@ function querySearch(){
   });
 }
 
+
 function updateSearchAnswer(){
   $('#search_answer').html(messagesToProcess.shift());
 }
 
 
-function queryTflLocations(){
+function queryGroup(){
   resetWs(function(){
-    $('#tfl_locations_answer').html('processing');
+    $('#group_answer').html('processing');
     $.ajax({
       type: "POST",
-      url: 'rest/query/tfl-locations',
-      data: $('#tfl_locations_filter').val(),
+      url: 'rest/query/group',
+      data: $('#group_filter').val(),
       dataType: 'text',
       success: function(data){
         if(data){
           socket = new WebSocket(getWsUrl()+data);
           socket.onmessage = function (event) {;
             messagesToProcess.push(event.data);
-            updateTflLocationsAnswer();
+            updateGroupAnswer();
           }
         }
       }
@@ -105,12 +106,9 @@ function queryTflLocations(){
 }
 
 
-function updateTflLocationsAnswer(){
-  $('#tfl_locations_answer').html(messagesToProcess.shift());
+function updateGroupAnswer(){
+  $('#group_answer').html(messagesToProcess.shift());
 }
-
-
-
 
 
 $(document).ready(function() {
