@@ -107,7 +107,29 @@ public class SearchRecords extends KappaQuery{
 			JSONArray results = new JSONArray();
 			Iterator<JSONObject> i= ((ArrayList<JSONObject>) this.result).iterator();
 			while(i.hasNext()){
-				results.put(i.next());
+				
+				if(filterJson.has("_source")){
+					System.out.println("source filtering");
+					JSONObject resultObject = i.next();
+					JSONArray sources = filterJson.optJSONArray("_source");
+					if(sources != null){
+						JSONObject filterSouceObject = new JSONObject();
+						for(int j=0; j < sources.length(); j++){
+							if(resultObject.has(sources.getString(j))){
+								filterSouceObject.put(sources.getString(j), resultObject.get(sources.getString(j)));
+							}
+						}
+						results.put(filterSouceObject);
+					}
+					else{
+						results.put(i.next());
+					}
+					
+				}
+				else{
+					System.out.println("no source filtering");
+					results.put(i.next());
+				}
 				
 			}
 			result = results.toString(1);

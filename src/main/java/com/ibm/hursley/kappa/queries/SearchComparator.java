@@ -65,12 +65,21 @@ public class SearchComparator implements Comparator<JSONObject>{
 		String fieldValue1 = o1.optString(sortField);
 		String fieldValue2 = o2.optString(sortField);
 		
-		Date dateField1 = parseAsDate(fieldValue1);
-		Date dateField2 = parseAsDate(fieldValue2);
-		
+		// test for integer first
 		Integer intField1 = parseAsInt(fieldValue1);
 		Integer intField2 = parseAsInt(fieldValue2);
+		if(intField1 != null && intField2 != null){
+			if(sortOrder.equalsIgnoreCase("asc")){
+				return intField1.intValue() - intField2.intValue();
+			}
+			else{
+				return intField2.intValue() - intField1.intValue();
+			}
+		}
 		
+		// test for date
+		Date dateField1 = parseAsDate(fieldValue1);
+		Date dateField2 = parseAsDate(fieldValue2);
 		if(dateField1 != null && dateField2 != null){
 			// date strings
 			if(dateField1.getTime() == dateField2.getTime()){
@@ -94,23 +103,16 @@ public class SearchComparator implements Comparator<JSONObject>{
 				}
 			}
 		}
-		else if(intField1 != null && intField2 != null){
-			if(sortOrder.equalsIgnoreCase("asc")){
-				return intField1.intValue() - intField2.intValue();
-			}
-			else{
-				return intField2.intValue() - intField1.intValue();
-			}
+		
+		// default to string
+		// standard strings
+		if(sortOrder.equalsIgnoreCase("asc")){
+			return fieldValue2.compareToIgnoreCase(fieldValue1);
 		}
 		else{
-			// standard strings
-			if(sortOrder.equalsIgnoreCase("asc")){
-				return fieldValue2.compareToIgnoreCase(fieldValue1);
-			}
-			else{
-				return fieldValue1.compareToIgnoreCase(fieldValue2);
-			}
+			return fieldValue1.compareToIgnoreCase(fieldValue2);
 		}
+		
 	}
 	
 	
