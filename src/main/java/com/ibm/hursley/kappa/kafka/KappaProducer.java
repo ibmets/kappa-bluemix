@@ -38,7 +38,7 @@ public class KappaProducer {
 	public void addMessage(String message){
 		KafkaProducer<String, byte[]> kafkaProducer = getProducer();
 		try{
-			kafkaProducer.send(new ProducerRecord<String, byte[]>("search", message.getBytes()),new Callback() {
+			kafkaProducer.send(new ProducerRecord<String, byte[]>(Bluemix.TOPIC, message.getBytes()),new Callback() {
 				@Override
 				public void onCompletion(RecordMetadata meta, Exception e) {
 					if(meta != null){

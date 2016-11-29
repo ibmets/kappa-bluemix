@@ -2,16 +2,23 @@ package com.ibm.hursley.kappa.bluemix;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Properties;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,10 +29,16 @@ public class Bluemix {
 	
 	private static final Logger logger = Logger.getLogger(Bluemix.class); 
     private static String bootstrapServers = null;
+    private static String adminApiUrl = null;
+    private static String apiKey = null;
     private static boolean initialised = false;
     
     private static Properties producerProperties = null;
     private static Properties consumerProperties = null;
+    
+    public static final String TOPIC = "kappa-index";
+    public static final int PARTITIONS = 5;
+    public static final String RETENTION = "2592000000"; //MS MAX
     
     
     private static void init(){
@@ -89,6 +102,17 @@ public class Bluemix {
             			}
             		}
                 }
+                
+                if(credentials.getKafkaAdminUrl() != null && credentials.getKafkaAdminUrl().length() > 0){
+                	Bluemix.adminApiUrl = credentials.getKafkaAdminUrl();
+                    logger.log(Level.INFO, "Setting rest admin to " + Bluemix.adminApiUrl);
+                }
+                
+                if(credentials.getApiKey() != null && credentials.getApiKey().length() > 0){
+                	Bluemix.apiKey = credentials.getApiKey();
+                	logger.log(Level.INFO, "Setting api key url to " + Bluemix.apiKey);
+                }
+                
             } 
             catch (final Exception e) {
             	e.printStackTrace();
@@ -198,6 +222,69 @@ public class Bluemix {
     		consumerProperties = getClientConfiguration(false);
     	}
     	return consumerProperties;
+    }
+    
+    
+    public static void runInitialSetup(){
+  
+    	URL url = null;
+    	int responseCode = 0;
+		try {
+			url = new URL(Bluemix.adminApiUrl);
+			url = new URL(url.getProtocol(), url.getHost(), url.getPort(), "/admin/topics", null);
+			
+			HttpsURLConnection connection = null;
+	        
+	        // Create secure connection to the REST URL.
+            SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+            sslContext.init(null, null, null);
+
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(sslContext.getSocketFactory());
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+
+            // Apply headers, in this case, the API key and Kafka content type.
+            connection.setRequestProperty("X-Auth-Token",Bluemix.apiKey);
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            // Send the request, writing the body data
+            // to the output stream.
+            JSONObject topicOptions = new JSONObject();
+            JSONObject topicOptionsConfig = new JSONObject();
+            topicOptions.put("name", Bluemix.TOPIC);
+            topicOptions.put("partitions", Bluemix.PARTITIONS);
+            topicOptions.put("configs", topicOptionsConfig);
+            topicOptionsConfig.put("retentionMs", Bluemix.RETENTION); // MAX
+            
+            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+            wr.writeBytes(topicOptions.toString());
+            wr.close();
+
+            responseCode = connection.getResponseCode();
+            InputStream is = connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            StringBuilder response = new StringBuilder();
+            String line;
+
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
+            }
+
+            rd.close();
+            
+            logger.log(Level.INFO, "Creating topic, response: " + responseCode + " " +responseCode);
+		} 
+		catch (Exception e) {
+			if(responseCode == 422){
+				logger.log(Level.INFO, "Topic already exists, nothing to do.");
+			}
+			else{
+				logger.log(Level.ERROR, "Error creating topic: " + e.toString());
+			}
+		}
+    	
     }
     
 	

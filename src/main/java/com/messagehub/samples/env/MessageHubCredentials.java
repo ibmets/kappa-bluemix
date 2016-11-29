@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class MessageHubCredentials {
 
-    private String apiKey, kafkaRestUrl, user, password;
+    private String apiKey, kafkaRestUrl, kafkaAdminUrl, user, password;
     private String[] kafkaBrokers, kafkaBrokersSasl;
 
     @JsonProperty("api_key")
@@ -46,6 +46,16 @@ public class MessageHubCredentials {
     @JsonProperty("kafka_rest_url")
     public void setKafkaRestUrl(String kafkaRestUrl) {
         this.kafkaRestUrl = kafkaRestUrl;
+    }
+    
+    @JsonProperty("kafka_admin_url")
+    public String getKafkaAdminUrl() {
+        return kafkaAdminUrl;
+    }
+
+    @JsonProperty("kafka_admin_url")
+    public void setKafkaAdminUrl(String kafkaAdminUrl) {
+        this.kafkaAdminUrl = kafkaAdminUrl;
     }
 
     @JsonProperty

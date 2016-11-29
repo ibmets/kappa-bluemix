@@ -88,7 +88,7 @@ public class KappaQuery extends Thread{
 		
 		// set topics
 		ArrayList<String> topicList = new ArrayList<String>();
-		topicList.add("search");
+		topicList.add(Bluemix.TOPIC);
 		this.kafkaConsumer.subscribe(topicList);
 		
 		// rest to start of stream
@@ -108,7 +108,7 @@ public class KappaQuery extends Thread{
 			kafkaConsumer.poll(10000);
 			
 			ArrayList<TopicPartition> topicPartions = new ArrayList<>();
-			List<PartitionInfo> partitionsInfo =  kafkaConsumer.partitionsFor("search");
+			List<PartitionInfo> partitionsInfo =  kafkaConsumer.partitionsFor(Bluemix.TOPIC);
 			if(partitionsInfo != null){
 				Iterator<PartitionInfo> i = partitionsInfo.iterator();
 				while(i.hasNext()){
