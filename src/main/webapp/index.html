@@ -5,17 +5,17 @@
   </head>
   <body>
 		<h1>Count</h1>
-		<textarea cols="80" id="filter">{ "match": { "lineName": "Northern" } }</textarea>
+		<textarea cols="80" id="filter">{ "match": { "type": "edit" }}</textarea>
 		<button onclick="queryCount()">Count</button>
 		<span id="count_answer">0</span>
 
     <h1>Search</h1>
-		<textarea cols="80" id="search_filter">{ "match": { "lineName": "Northern" }, "sort":[{"expectedArrival" : {"order" : "desc", "limit":10}}], "_source": [ "lineName" ]}</textarea>
+		<textarea cols="80" id="search_filter">{ "match": { "type": "edit" }, "sort":[{"timestamp" : {"order" : "desc", "limit":10}}]}</textarea>
 		<button onclick="querySearch()">Search</button>
 		<span id="search_answer"></span>
 
     <h1>Group</h1>
-    <textarea cols="80" id="group_filter">{"group_by":{"field":"lineName"}, "sort":[{"count" : {"order" : "desc", "limit":10}}]}</textarea>
+    <textarea cols="80" id="group_filter">{"group_by":{"field":"user"}, "sort":[{"count" : {"order" : "desc", "limit":10}}]}</textarea>
     <button onclick="queryGroup()">Group</button>
     <span id="group_answer"></span>
 

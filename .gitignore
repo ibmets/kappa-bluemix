@@ -20,3 +20,8 @@ manifest.yml
 eclipse-libs/
 wlp/
 build-local.sh
+
+# sample-data wikipedia
+sample-data/wikipedia/node_modules
+sample-data/wikipedia/npm-debug.log
+sample-data/wikipedia/.env

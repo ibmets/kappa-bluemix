@@ -127,7 +127,6 @@ public class SearchRecords extends KappaQuery{
 					
 				}
 				else{
-					System.out.println("no source filtering");
 					results.put(i.next());
 				}
 				
@@ -136,26 +135,6 @@ public class SearchRecords extends KappaQuery{
 		}
 		return result;
 	}
-	
-	
-
-	
-	
-	
-	
-	private int compareValues(String valueA, String valueB){
-		int compare = 0;
-		if(valueA.length() < 1){
-			return 1;
-		}
-		if(valueB.length() < 1){
-			return -1;
-		}
-		
-		compare = valueA.compareTo(valueB);
-		return compare;
-	}
-	
 	
 	
 	

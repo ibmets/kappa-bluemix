@@ -1,0 +1,19 @@
+{
+  "name": "wikipedia",
+  "version": "1.0.0",
+  "description": "Import of live change data from wikipedia to messagehub",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node start.js"
+  },
+  "author": "Darren Shaw",
+  "license": "ISC",
+  "dependencies": {
+    "cfenv": "1.0.x",
+    "dotenv": "^2.0.0",
+    "express": "4.13.x",
+    "message-hub-rest": "^1.2.0",
+    "socket.io-client": "0.9.x"
+  }
+}
