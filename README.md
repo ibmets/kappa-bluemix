@@ -52,6 +52,16 @@ cf push
 * add VCAP_SERVICEs in to server.env
 * install bin/installUtility install wssecurity-1.1
 
+
+## Building and Deploying Docker Container
+
+### Build an image from the Dockerfile
+```docker build -t kappa-bluemix-image:0.1 .
+
+### Test Image Locally
+```docker run -p 127.0.0.1:9080:9080 --name kappa-bluemix-container -t kappa-bluemix-image:0.1
+
+
 # TODO
 * Exampe live data feed
 http://www.marinetraffic.com/en/ais-api-services/documentation

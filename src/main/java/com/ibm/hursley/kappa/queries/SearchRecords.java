@@ -2,7 +2,10 @@ package com.ibm.hursley.kappa.queries;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.log4j.Level;
@@ -135,7 +138,9 @@ public class SearchRecords extends KappaQuery{
 		}
 		return result;
 	}
+		
 	
+
 	
 	
 }

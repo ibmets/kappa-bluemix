@@ -10,8 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -22,6 +26,7 @@ import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 import com.messagehub.samples.env.MessageHubCredentials;
 import com.messagehub.samples.env.MessageHubEnvironment;
 
@@ -226,6 +231,8 @@ public class Bluemix {
     
     
     public static void runInitialSetup(){
+    	
+    	Bluemix.outputSystemInfo();
   
     	URL url = null;
     	int responseCode = 0;
@@ -286,6 +293,12 @@ public class Bluemix {
 		}
     	
     }
+    
+	public static void outputSystemInfo(){
+		Properties systemProperties = System.getProperties();
+		systemProperties.list(System.out);
+	  
+	}
     
 	
 }
