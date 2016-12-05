@@ -1,4 +1,31 @@
+html{
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-style: normal;
+	font-variant: normal;
+  font-weight: 500;
+}
+
 
 textarea{
   display: block;
 }
+
+
+h1,h2,h3,h4,h5,h6{
+  margin-bottom: 0px;
+}
+
+/* json formatting */
+/* from: http://stackoverflow.com/questions/4810841/how-can-i-pretty-print-json-using-javascript */
+pre {
+  font-family: monospace;
+  outline: 1px solid #ccc;
+  padding: 5px;
+  margin: 5px;
+}
+
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }

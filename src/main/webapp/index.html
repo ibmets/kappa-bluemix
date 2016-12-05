@@ -4,24 +4,20 @@
 		<link rel="stylesheet" type="text/css" href="css/site.css">
   </head>
   <body>
-		<h1>Count</h1>
-		<textarea cols="80" id="filter">{ "match": { "type": "edit" }}</textarea>
-		<button onclick="queryCount()">Count</button>
-		<span id="count_answer">0</span>
-
-    <h1>Search</h1>
-		<textarea cols="80" id="search_filter">{ "match": { "type": "edit" }, "sort":[{"timestamp" : {"order" : "desc", "limit":10}}]}</textarea>
-		<button onclick="querySearch()">Search</button>
-		<span id="search_answer"></span>
-
-    <h1>Group</h1>
-    <textarea cols="80" id="group_filter">{"group_by":{"field":"user"}, "sort":[{"count" : {"order" : "desc", "limit":10}}]}</textarea>
-    <button onclick="queryGroup()">Group</button>
-    <span id="group_answer"></span>
-
+    <h3>Query</h3>
+		<select id="query_type">
+      <option value="count">Count</option>
+      <option value="search">Search</option>
+      <option value="group">Group</option>
+    </select>
+    <button onclick="runQuery()">Run Query</button>  
+    <pre contenteditable="true" id="filter">{ "match": { "type": "edit" }}</pre>
+    <h3>Result</h3>
+    <pre id="result"></pre>
   </body>
 
 	<script src="js/jquery-3.1.1.min.js"></script>
   <script src="js/kappa-client.js"></script>
-  <script src="js/site.js"></script>
+  <script src="js/index.js"></script>
+
 </html>

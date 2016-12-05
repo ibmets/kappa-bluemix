@@ -46,11 +46,11 @@ public class CountRecords extends KappaQuery{
 	
 	
 	public String getResult(){
-		String result = "0";
+		JSONObject jsonResult = new JSONObject();
 		if(this.result instanceof Integer){
-			result = ((Integer) this.result).intValue() + "";
+			jsonResult.put("count",((Integer) this.result).intValue());
 		}
-		return result;
+		return jsonResult.toString();
 	}
 	
 	
