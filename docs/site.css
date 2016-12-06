@@ -1,0 +1,99 @@
+html{
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-style: normal;
+	font-variant: normal;
+  font-weight: 500;
+}
+
+
+body{
+  background-color: #4990E2;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+a{
+  text-decoration: none;
+  color: #fff;
+  font-weight: normal;
+  letter-spacing: 0.6px;
+}
+
+a:hover{
+  text-decoration: underline;
+
+}
+
+textarea{
+  display: block;
+}
+
+
+h1,h2,h3,h4,h5,h6{
+  margin-bottom: 0px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+h1{
+  margin-top: 33px;
+  margin-bottom: 33px;
+  text-align: center;
+  font-weight: lighter;
+  width: 60vw;
+  max-width: 600px;
+  font-size: 7vw;
+}
+
+
+p{
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: normal;
+  line-height: 1.5em;
+
+}
+
+
+p.intro{
+  font-style: italic;
+  font-weight: lighter;
+  letter-spacing: 1px;
+}
+
+
+p.info{
+  font-weight: lighter;
+  letter-spacing: 1px;
+}
+
+.wrapper{
+    margin-left: auto;
+    margin-right: auto;
+    width: 60vw;
+    max-width: 600px;
+    min-width: 200px;
+}
+
+.video{
+  width: 100%;
+  background-color: #fff;
+}
+
+
+/* json formatting */
+/* from: http://stackoverflow.com/questions/4810841/how-can-i-pretty-print-json-using-javascript */
+pre {
+  font-family: monospace;
+  outline: 1px solid #ccc;
+  padding: 5px;
+  margin: 5px;
+}
+
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }

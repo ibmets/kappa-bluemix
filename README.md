@@ -1,5 +1,14 @@
 # kappa-bluemix
 
+## About
+A single query to process historic and realtime data.
+
+Kappa Bluemix is a prototype implementation of a [Kappa Architecture](http://milinda.pathirage.org/kappa-architecture.com/)  using IBM Message Hub as the immutable log.  Batch and streamed data are both processed identically, meaning developers only need write one query and set of logic.
+
+An Elastic Search-like query is posted, which returns a websocket, through which the current result and and any future updates will be sent.
+
+
+
 ## Prerequisites
 To build and run the sample, you must have the following installed:
 
