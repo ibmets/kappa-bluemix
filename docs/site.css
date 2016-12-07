@@ -84,6 +84,15 @@ p.info{
 }
 
 
+
+.negative{
+  background-color: #fff;
+  color: #4990E2;
+}
+
+
+
+
 /* json formatting */
 /* from: http://stackoverflow.com/questions/4810841/how-can-i-pretty-print-json-using-javascript */
 pre {
