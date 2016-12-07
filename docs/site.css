@@ -5,12 +5,27 @@ html{
   font-weight: 500;
 }
 
-
 body{
   background-color: #4990E2;
   color: #fff;
   margin: 0;
   padding: 0;
+}
+
+h1,h2,h3,h4,h5,h6{
+  margin-bottom: 0px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h1{
+  margin-top: 33px;
+  margin-bottom: 33px;
+  text-align: center;
+  font-weight: lighter;
+  width: 65vw;
+  max-width: 600px;
+  font-size: 7vw;
 }
 
 a{
@@ -29,24 +44,12 @@ textarea{
   display: block;
 }
 
-
-h1,h2,h3,h4,h5,h6{
-  margin-bottom: 0px;
-  margin-left: auto;
-  margin-right: auto;
+hr{
+  border: 0;
+   height: 0;
+   border-top: 0;
+   border-bottom: 1px solid #999;
 }
-
-
-h1{
-  margin-top: 33px;
-  margin-bottom: 33px;
-  text-align: center;
-  font-weight: lighter;
-  width: 65vw;
-  max-width: 600px;
-  font-size: 7vw;
-}
-
 
 p{
   margin-left: auto;
@@ -56,22 +59,26 @@ p{
 
 }
 
-
 p.intro{
   font-style: italic;
   font-weight: lighter;
   letter-spacing: 1px;
 }
 
-
 p.info{
   font-weight: lighter;
   letter-spacing: 1px;
 }
 
+p.about{
+  font-weight: lighter;
+  letter-spacing: 0.5px;
+}
+
 .wrapper{
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 33px;
     width: 65vw;
     max-width: 600px;
     min-width: 200px;
@@ -83,15 +90,28 @@ p.info{
   background-color: #fff;
 }
 
-
-
 .negative{
   background-color: #fff;
-  color: #4990E2;
+  color: #777;
 }
 
+.negative a{
+  text-decoration: underline;;
+  color: #777;
+  font-weight: lighter;;
 
+}
 
+.negative a:HOVER{
+    text-decoration: underline;
+}
+
+.negative .wrapper{
+  margin-bottom: 0px;
+  padding-top: 33px;
+  padding-bottom: 33px;
+
+}
 
 /* json formatting */
 /* from: http://stackoverflow.com/questions/4810841/how-can-i-pretty-print-json-using-javascript */

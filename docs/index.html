@@ -25,19 +25,22 @@
     </div>
     <div class="negative">
       <div class="wrapper">
-        <p>
-          Kappa Bluemix assumes all data is stored in JSON format on a Message Hub queue. When a query is submitted a new consumer is created and it's position is set to the start of the queue (where the earliest message is). A URL to a websocket connection is returned to the client that submitted the query.  Kappa Bluemix then processes all the messages in the queue in the order they were added and outputs the result to the websocket connection.  Once the process has reached the front of the queue (where the newest message is) it keeps the websocket connection open and waits for any new data to be added to the queue, automatically processing it and updating the client when it is.
+        <p class="about">
+          Kappa Bluemix assumes all data is stored in JSON format on a Message Hub queue. When a query is submitted a new consumer is created and it's position is set to the start of the queue (where the earliest message is). A URL to a websocket connection is returned to the client that submitted the query. Kappa Bluemix then processes all the messages in the queue in the order they were added and outputs the result to the websocket connection.
         </p>
-        <p>
-          Queries are shared across clients, so multiple clients with identical queries make use of the same consumer and processing.  If the client closes the websocket connection and there are no other clients using the same query, Kappa Bluemix will stop waiting for more data to arrive and shutdown the consumer.
+        <p class="about">
+          Once the process has reached the front of the queue (where the newest message is) it keeps the websocket connection open and waits for any new data to be added to the queue, automatically processing it and updating the client when it is.
+        </p>
+        <p class="about">
+          Queries are shared across clients, so multiple clients with identical queries make use of the same consumer and processing. If the client closes the websocket connection and there are no other clients using the same query, Kappa Bluemix will stop waiting for more data to arrive and shutdown the consumer.
+        </p>
+        <hr/>
+        <p class="about">
+          Kappa Bluemix was created by IBM <a href="https://ets.mybluemix.net">Emerging Technology</a>.  Find out more about Emerging Technology, the other <a href="https://ets.mybluemix.net/catalogue/demos">projects</a> we work on, or get in <a href="mailto:shawdm@uk.ibm.com">touch</a> - Darren.
         </p>
       </div>
     </div>
-    <div class="wrapper">
-      <p class="info">
-        Kappa Bluemix was created by IBM <a href="https://ets.mybluemix.net">Emerging Technology</a>.  Find out more about Emerging Technology, the other <a href="https://ets.mybluemix.net/catalogue/demos">projects</a> we work on, or get in <a href="mailto:shawdm@uk.ibm.com">touch</a> - Darren.
-      </p>
-    </div>
+
   </body>
 
 </html>
