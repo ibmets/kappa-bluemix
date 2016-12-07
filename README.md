@@ -165,7 +165,11 @@ cf push
 
 
 # Todo
-* Example live Wikpedia data feed documentation
-* Documentation of sample client app
-* Deploy via Docker container
-* Deploy to Bluemix liberty runtime
+* Example live Wikipedia data feed documentation.
+* Documentation of sample client app.
+* Deploy via Docker container.
+* Deploy to Bluemix liberty runtime.
+* OS license.
+* Narrated video of queries.
+* Design for running queries in parallel (or move to openwhisk).
+* Move to ETS github.
