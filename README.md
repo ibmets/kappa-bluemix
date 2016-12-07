@@ -163,7 +163,6 @@ cf push
 
 
 # Todo
-* Exampe live data feed
-http://www.marinetraffic.com/en/ais-api-services/documentation
-http://datacasting.jpl.nasa.gov/feed_directory/show_category.php?browse=term&termId=80
-tfl
+* Example live wikpedia data feed documentation
+* Deploy via Docker container
+* Deploy to Bluemix
