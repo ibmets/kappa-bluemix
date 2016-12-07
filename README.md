@@ -7,12 +7,14 @@ Kappa Bluemix is a prototype implementation of a [Kappa Architecture](http://mil
 An Elastic Search-like query is posted, which returns a websocket, through which the current result and and any future updates will be sent.
 
 ### How It Works
-Kappa Bluemix assumes all data is stored in JSON format on a Message Hub queue. When a query is submitted a new consumer is created and it's position is set to the start of the queue (where the earliest message is). A URL to a websocket connection is returned to the client that submitted the query.  Kappa Bluemix then processes all the messages in the queue in the order they were added and outputs the result to the websocket connection.  Once the process has reached the front of the queue (where the newest message is) it keeps the websocket connection open and waits for any new data to be added to the queue, automatically processing it and updating the client when it is.
+Kappa Bluemix assumes all data is stored in JSON format on a Message Hub queue. When a query is submitted a new consumer is created and it's position is set to the start of the queue (where the earliest message is). A URL to a websocket connection is returned to the client that submitted the query.  Kappa Bluemix then processes all the messages in the queue in the order they were added and outputs the result to the websocket connection.  
+
+Once the process has reached the front of the queue (where the newest message is) it keeps the websocket connection open and waits for any new data to be added to the queue, automatically processing it and updating the client when it is.
 
 Queries are shared across clients, so multiple clients with identical queries make use of the same consumer and processing.  If the client closes the websocket connection and there are no other clients using the same query, Kappa Bluemix will stop waiting for more data to arrive and shutdown the consumer.
 
 ### API
-Three types of query can be submitted, *count*, *search* and *group*, by posting JSON query data to /rest/query/count, /rest/query/search and /rest/query/group.  On posting a query a websocket URL will be returned, the client should open a connection to the websocket to receive the result.
+Three types of query can be submitted, *count*, *search* and *group*, by posting JSON query data to ```/rest/query/count```, ```/rest/query/search``` and ```/rest/query/group```.  On posting a query a websocket URL will be returned, the client should open a connection to the websocket to receive the result.
 
 ### Query Format
 The query data is loosely based on the [Elastic Search](https://www.elastic.co/guide/en/elasticsearch/reference/current/_introducing_the_query_language.html) query format.
@@ -163,6 +165,7 @@ cf push
 
 
 # Todo
-* Example live wikpedia data feed documentation
+* Example live Wikpedia data feed documentation
+* Documentation of sample client app
 * Deploy via Docker container
-* Deploy to Bluemix
+* Deploy to Bluemix liberty runtime
