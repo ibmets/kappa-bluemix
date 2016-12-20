@@ -122,10 +122,9 @@ You should see a directory called `target` created in your project home director
 To deploy applications using the IBM WebSphere Application Server Liberty Buildpack, you are required to accept the IBM Liberty license and IBM JRE license by following the instructions below:
 
 1. Move `manifest.yml.template` to `manifest.yml`
-2. Read the current IBM [Liberty-License][http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/8.5.5.7/lafiles/runtime/en.html] and the current IBM [JVM-License][http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?la_formnum=&li_formnum=L-JWOD-9SYNCP&title=IBM%C2%AE+SDK%2C+Java+Technology+Edition%2C+Version+8.0&l=en].
+2. Read the current IBM [Liberty-License](http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/8.5.5.7/lafiles/runtime/en.html) and the current IBM [JVM-License](http://www14.software.ibm.com/cgi-bin/weblap/lap.pl?la_formnum=&li_formnum=L-JWOD-9SYNCP&title=IBM%C2%AE+SDK%2C+Java+Technology+Edition%2C+Version+8.0&l=en).
 3. Extract the `D/N: <License code>` from the Liberty-License and JVM-License.
-4. Add the following environment variables and extracted license codes to the `manifest.yml` file in the directory from which you push your application. For further information on the format of
-the `manifest.yml` file refer to the [manifest documentation][].
+4. Add the following environment variables and extracted license codes to the `manifest.yml` file in the directory from which you push your application.
 
 ```yaml
 env:
