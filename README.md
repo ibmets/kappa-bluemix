@@ -151,6 +151,5 @@ cf push
 ```docker run -p 127.0.0.1:9080:9080 --name kappa-bluemix-container -t kappa-bluemix-image:0.1```
 
 # Todo
-* OS license.
 * Design for running queries in parallel (or move to openwhisk).
 * Move to ETS github.
